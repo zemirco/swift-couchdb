@@ -1,0 +1,434 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3B068AFB1B34A21E00F27CBF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B068AFA1B34A21E00F27CBF /* AppDelegate.swift */; };
+		3B068AFD1B34A21E00F27CBF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B068AFC1B34A21E00F27CBF /* ViewController.swift */; };
+		3B068B001B34A21E00F27CBF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3B068AFE1B34A21E00F27CBF /* Main.storyboard */; };
+		3B068B021B34A21E00F27CBF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B068B011B34A21E00F27CBF /* Images.xcassets */; };
+		3B068B051B34A21E00F27CBF /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B068B031B34A21E00F27CBF /* LaunchScreen.xib */; };
+		3B068B111B34A21E00F27CBF /* swift_couchdbTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B068B101B34A21E00F27CBF /* swift_couchdbTests.swift */; };
+		3B068B1B1B34A23200F27CBF /* CouchDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B068B1A1B34A23200F27CBF /* CouchDB.swift */; };
+		3B068B1D1B34A42D00F27CBF /* HTTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B068B1C1B34A42D00F27CBF /* HTTP.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3B068B0B1B34A21E00F27CBF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3B068AED1B34A21E00F27CBF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3B068AF41B34A21E00F27CBF;
+			remoteInfo = "swift-couchdb";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		3B068AF51B34A21E00F27CBF /* swift-couchdb.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "swift-couchdb.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3B068AF91B34A21E00F27CBF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3B068AFA1B34A21E00F27CBF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		3B068AFC1B34A21E00F27CBF /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		3B068AFF1B34A21E00F27CBF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		3B068B011B34A21E00F27CBF /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		3B068B041B34A21E00F27CBF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		3B068B0A1B34A21E00F27CBF /* swift-couchdbTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "swift-couchdbTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3B068B0F1B34A21E00F27CBF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3B068B101B34A21E00F27CBF /* swift_couchdbTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = swift_couchdbTests.swift; sourceTree = "<group>"; };
+		3B068B1A1B34A23200F27CBF /* CouchDB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CouchDB.swift; sourceTree = "<group>"; };
+		3B068B1C1B34A42D00F27CBF /* HTTP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTP.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3B068AF21B34A21E00F27CBF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3B068B071B34A21E00F27CBF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3B068AEC1B34A21E00F27CBF = {
+			isa = PBXGroup;
+			children = (
+				3B068AF71B34A21E00F27CBF /* swift-couchdb */,
+				3B068B0D1B34A21E00F27CBF /* swift-couchdbTests */,
+				3B068AF61B34A21E00F27CBF /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		3B068AF61B34A21E00F27CBF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3B068AF51B34A21E00F27CBF /* swift-couchdb.app */,
+				3B068B0A1B34A21E00F27CBF /* swift-couchdbTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3B068AF71B34A21E00F27CBF /* swift-couchdb */ = {
+			isa = PBXGroup;
+			children = (
+				3B068AFA1B34A21E00F27CBF /* AppDelegate.swift */,
+				3B068AFC1B34A21E00F27CBF /* ViewController.swift */,
+				3B068B1A1B34A23200F27CBF /* CouchDB.swift */,
+				3B068B1C1B34A42D00F27CBF /* HTTP.swift */,
+				3B068AFE1B34A21E00F27CBF /* Main.storyboard */,
+				3B068B011B34A21E00F27CBF /* Images.xcassets */,
+				3B068B031B34A21E00F27CBF /* LaunchScreen.xib */,
+				3B068AF81B34A21E00F27CBF /* Supporting Files */,
+			);
+			path = "swift-couchdb";
+			sourceTree = "<group>";
+		};
+		3B068AF81B34A21E00F27CBF /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				3B068AF91B34A21E00F27CBF /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		3B068B0D1B34A21E00F27CBF /* swift-couchdbTests */ = {
+			isa = PBXGroup;
+			children = (
+				3B068B101B34A21E00F27CBF /* swift_couchdbTests.swift */,
+				3B068B0E1B34A21E00F27CBF /* Supporting Files */,
+			);
+			path = "swift-couchdbTests";
+			sourceTree = "<group>";
+		};
+		3B068B0E1B34A21E00F27CBF /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				3B068B0F1B34A21E00F27CBF /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3B068AF41B34A21E00F27CBF /* swift-couchdb */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3B068B141B34A21E00F27CBF /* Build configuration list for PBXNativeTarget "swift-couchdb" */;
+			buildPhases = (
+				3B068AF11B34A21E00F27CBF /* Sources */,
+				3B068AF21B34A21E00F27CBF /* Frameworks */,
+				3B068AF31B34A21E00F27CBF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "swift-couchdb";
+			productName = "swift-couchdb";
+			productReference = 3B068AF51B34A21E00F27CBF /* swift-couchdb.app */;
+			productType = "com.apple.product-type.application";
+		};
+		3B068B091B34A21E00F27CBF /* swift-couchdbTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3B068B171B34A21E00F27CBF /* Build configuration list for PBXNativeTarget "swift-couchdbTests" */;
+			buildPhases = (
+				3B068B061B34A21E00F27CBF /* Sources */,
+				3B068B071B34A21E00F27CBF /* Frameworks */,
+				3B068B081B34A21E00F27CBF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3B068B0C1B34A21E00F27CBF /* PBXTargetDependency */,
+			);
+			name = "swift-couchdbTests";
+			productName = "swift-couchdbTests";
+			productReference = 3B068B0A1B34A21E00F27CBF /* swift-couchdbTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3B068AED1B34A21E00F27CBF /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0630;
+				ORGANIZATIONNAME = zemirco;
+				TargetAttributes = {
+					3B068AF41B34A21E00F27CBF = {
+						CreatedOnToolsVersion = 6.3.2;
+					};
+					3B068B091B34A21E00F27CBF = {
+						CreatedOnToolsVersion = 6.3.2;
+						TestTargetID = 3B068AF41B34A21E00F27CBF;
+					};
+				};
+			};
+			buildConfigurationList = 3B068AF01B34A21E00F27CBF /* Build configuration list for PBXProject "swift-couchdb" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 3B068AEC1B34A21E00F27CBF;
+			productRefGroup = 3B068AF61B34A21E00F27CBF /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3B068AF41B34A21E00F27CBF /* swift-couchdb */,
+				3B068B091B34A21E00F27CBF /* swift-couchdbTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3B068AF31B34A21E00F27CBF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3B068B001B34A21E00F27CBF /* Main.storyboard in Resources */,
+				3B068B051B34A21E00F27CBF /* LaunchScreen.xib in Resources */,
+				3B068B021B34A21E00F27CBF /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3B068B081B34A21E00F27CBF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3B068AF11B34A21E00F27CBF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3B068AFD1B34A21E00F27CBF /* ViewController.swift in Sources */,
+				3B068B1D1B34A42D00F27CBF /* HTTP.swift in Sources */,
+				3B068AFB1B34A21E00F27CBF /* AppDelegate.swift in Sources */,
+				3B068B1B1B34A23200F27CBF /* CouchDB.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3B068B061B34A21E00F27CBF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3B068B111B34A21E00F27CBF /* swift_couchdbTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3B068B0C1B34A21E00F27CBF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3B068AF41B34A21E00F27CBF /* swift-couchdb */;
+			targetProxy = 3B068B0B1B34A21E00F27CBF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		3B068AFE1B34A21E00F27CBF /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3B068AFF1B34A21E00F27CBF /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		3B068B031B34A21E00F27CBF /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3B068B041B34A21E00F27CBF /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		3B068B121B34A21E00F27CBF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3B068B131B34A21E00F27CBF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		3B068B151B34A21E00F27CBF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = "swift-couchdb/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		3B068B161B34A21E00F27CBF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = "swift-couchdb/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		3B068B181B34A21E00F27CBF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "swift-couchdbTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/swift-couchdb.app/swift-couchdb";
+			};
+			name = Debug;
+		};
+		3B068B191B34A21E00F27CBF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "swift-couchdbTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/swift-couchdb.app/swift-couchdb";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3B068AF01B34A21E00F27CBF /* Build configuration list for PBXProject "swift-couchdb" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3B068B121B34A21E00F27CBF /* Debug */,
+				3B068B131B34A21E00F27CBF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3B068B141B34A21E00F27CBF /* Build configuration list for PBXNativeTarget "swift-couchdb" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3B068B151B34A21E00F27CBF /* Debug */,
+				3B068B161B34A21E00F27CBF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		3B068B171B34A21E00F27CBF /* Build configuration list for PBXNativeTarget "swift-couchdbTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3B068B181B34A21E00F27CBF /* Debug */,
+				3B068B191B34A21E00F27CBF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3B068AED1B34A21E00F27CBF /* Project object */;
+}
