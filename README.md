@@ -15,6 +15,9 @@ CouchDB client for Swift.
 // create new client
 var couchdb = CouchDB(url: "http://localhost:5984", name: nil, password: nil)
 
+// use database
+var database = couchdb.use("mydb")
+
 // get document by id
 database.get("abc123") { response in
     switch response {
