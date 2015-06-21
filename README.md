@@ -6,7 +6,7 @@ CouchDB client for Swift.
 ## Installation
 
 1. Install [swift-http](https://github.com/zemirco/swift-http)
-2. Copy CouchDB.swift from ./swift-couchdb/ into your project.
+2. Copy `CouchDB.swift` from `./swift-couchdb/` into your project.
 
 ## Usage
 
