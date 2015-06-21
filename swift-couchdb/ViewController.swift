@@ -69,28 +69,28 @@ class ViewController: UIViewController {
         var database = couchdb.use("awesome")
         
         // create document
-//        var doc = MyDocument(city: "darmstadt", _id: "tight", _rev: nil)
-//        database.post(doc) { response in
-//            switch response {
-//            case .Error(let error):
-//                println(error)
-//            case .Success(let res):
-//                println(res.id)
-//                println(res.ok)
-//                println(res.rev)
-//            }
-//        }
-        
-        // get document
-        var doc: MyDocument!
-        database.get("tight") { response in
+        var doc = MyDocument(city: "darmstadt", _id: "tight", _rev: nil)
+        database.post(doc) { response in
             switch response {
             case .Error(let error):
                 println(error)
-            case .Success(let data):
-                println(data)
-                doc = MyDocument(data: data)
-                
+            case .Success(let res):
+                println(res.id)
+                println(res.ok)
+                println(res.rev)
+            }
+        }
+        
+        // get document
+//        var doc: MyDocument!
+//        database.get("tight") { response in
+//            switch response {
+//            case .Error(let error):
+//                println(error)
+//            case .Success(let data):
+//                println(data)
+//                doc = MyDocument(data: data)
+//                
 //                // edit document
 //                doc.city = "Frankfurt"
 //                database.put(doc) { response in
@@ -115,8 +115,27 @@ class ViewController: UIViewController {
 //                        println(res.ok)
 //                    }
 //                }
-            }
-        }
+//            }
+//        }
+        
+//        var citiesByName = "function(doc) {if (doc.city) {emit(doc.city)}}"
+//        var myView = View(map: citiesByName, reduce: nil)
+//        
+//        var design = DesignDocument(_id: "cities", _rev: nil, views: [
+//                "citiesByName": myView
+//        ])
+//        
+//        database.put(design) { response in
+//            switch response {
+//            case .Error(let error):
+//                println(error)
+//            case .Success(let res):
+//                println(res.id)
+//                println(res.ok)
+//                println(res.rev)
+//            }
+//            
+//        }
         
     }
 

@@ -216,6 +216,51 @@ public class Document {
 
 
 /**
+ * Design document
+ */
+public class DesignDocument: Document {
+    
+    public let language: String = "javascript"
+    public var views: [String: View]
+    
+    public init(_id: String?, _rev: String?, views: [String: View]) {
+        self.views = views
+        super.init(_id: "_design/\(_id!)", _rev: _rev)
+    }
+    
+    public override func serialize() -> [String : AnyObject] {
+        self.dictionary["language"] = language
+        var wrapper = [String: AnyObject]()
+        for (key, value) in self.views {
+            var _views = ["map": value.map]
+            if let reduce = value.reduce {
+                _views["reduce"] = reduce
+            }
+            wrapper[key] = _views
+        }
+        self.dictionary["views"] = wrapper
+        return super.serialize()
+    }
+    
+}
+
+
+/**
+ * View
+ */
+public class View {
+    public var map: String
+    public var reduce: String?
+    
+    public init(map: String, reduce: String?) {
+        self.map = map
+        self.reduce = reduce
+    }
+    
+}
+
+
+/**
  * Database
  */
 public class Database {
