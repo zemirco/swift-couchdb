@@ -159,6 +159,10 @@ class ViewController: UIViewController {
             case .Success(let res):
                 println(res.offset)
                 println(res.total_rows)
+                for row in res.rows {
+                    println(row.id)
+                    println(row.key)
+                }
             }
         }
     }

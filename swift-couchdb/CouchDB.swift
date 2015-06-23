@@ -433,44 +433,52 @@ public class Database {
  */
 public class View {
     
+    /**
+     * http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
+     */
     public struct GETResponse {
         public var offset: Int!
-//        public var rows: [Row]!
+        public var rows: [Row]!
         public var total_rows: Int!
-//        public var update_seq: Int!
+        public var update_seq: Int!
         
         public init(data: AnyObject) {
             if let dict = data as? [String: AnyObject] {
                 if
                     let offset = dict["offset"] as? Int,
-//                    let rows = dict["rows"] as? [Row],
+                    let rows = dict["rows"] as? [AnyObject],
                     let total_rows = dict["total_rows"] as? Int {
-//                    let update_seq = dict["update_seq"] as? Int {
                         self.offset = offset
-//                        self.rows = rows
                         self.total_rows = total_rows
-//                        self.update_seq = update_seq
+                        self.rows = []
+                        for row in rows {
+                            self.rows.append(Row(data: row))
+                        }
+                }
+                if let update_seq = dict["update_seq"] as? Int {
+                    self.update_seq = update_seq
                 }
             }
         }
     }
     
-//    public struct Row {
-//        public var id: String!
-//        public var key: AnyObject!
-//        public var value: AnyObject!
-//        
-//        public init(data: AnyObject) {
-//            if let dict = data as? [String: AnyObject] {
-//                if
-//                    let id = dict["id"] as? String {
-//                        self.id = id
-//                        self.key = dict["key"]
-//                        self.value = dict["value"]
-//                }
-//            }
-//        }
-//    }
+    public struct Row {
+        public var id: String!
+        public var key: String!
+//        public var value: String!
+        
+        public init(data: AnyObject) {
+            if let dict = data as? [String: AnyObject] {
+                if
+                    let id = dict["id"] as? String,
+                    let key = dict["key"] as? String {
+                        self.id = id
+                        self.key = key
+//                        self.value = value
+                }
+            }
+        }
+    }
     
     private var url: String
     
