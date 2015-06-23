@@ -152,6 +152,7 @@ class ViewController: UIViewController {
         
         var params = QueryParameters()
         params.limit = 3
+        params.descending = true
         view.get("citiesByName", query: params) { response in
             switch response {
             case .Error(let error):

@@ -1,15 +1,16 @@
-//
-//  swift_couchdbTests.swift
-//  swift-couchdbTests
-//
-//  Created by Mirco Zeiss on 6/19/15.
-//  Copyright (c) 2015 zemirco. All rights reserved.
-//
 
 import UIKit
 import XCTest
+import swift_couchdb
 
 class swift_couchdbTests: XCTestCase {
+    
+    
+    
+    private let timeout: NSTimeInterval = 1
+    private var couchdb = CouchDB(url: "http://localhost:5984", name: nil, password: nil)
+    
+    
     
     override func setUp() {
         super.setUp()
@@ -21,16 +22,32 @@ class swift_couchdbTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        XCTAssert(true, "Pass")
+    func testCreateDatabase() {
+        let expectation = expectationWithDescription("create")
+        couchdb.create("test-database") { response in
+            switch response {
+            case .Error(let error):
+                XCTAssertNil(error)
+            case .Success(let success):
+                XCTAssert(success.ok!)
+            }
+            expectation.fulfill()
+        }
+        waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock() {
-            // Put the code you want to measure the time of here.
+    func testDeleteDatabase() {
+        let expectation = expectationWithDescription("delete")
+        couchdb.delete("test-database") { response in
+            switch response {
+            case .Error(let error):
+                XCTAssertNil(error)
+            case .Success(let success):
+                XCTAssert(success.ok!)
+            }
+            expectation.fulfill()
         }
+        waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
 }

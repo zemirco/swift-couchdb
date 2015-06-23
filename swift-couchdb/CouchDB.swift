@@ -90,25 +90,8 @@ public class CouchDB {
         }
     }
     
-    public struct PUTCreateError {
-        public var error: String!
-        public var reason: String!
-        
-        public init(data: AnyObject) {
-            if let dict = data as? [String: AnyObject] {
-                if
-                    let error = dict["error"] as? String,
-                    let reason = dict["reason"] as? String {
-                        self.error = error
-                        self.reason = reason
-                }
-            }
-        }
-    }
-    
     public enum CreateResponse {
         case Success(PUTCreateSuccess)
-        case Failure(PUTCreateError)
         case Error(NSError)
     }
     
@@ -119,8 +102,9 @@ public class CouchDB {
                 done(.Error(error))
             case .Success(let json, let res):
                 if res.statusCode != 201 {
-                    done(CreateResponse.Failure(PUTCreateError(data: json)))
-                    return
+                    done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
+                        NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
+                        ])))
                 }
                 done(.Success(PUTCreateSuccess(data: json)))
             }
