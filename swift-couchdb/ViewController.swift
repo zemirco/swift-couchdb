@@ -66,20 +66,20 @@ class ViewController: UIViewController {
 //            }
 //        }
         
-        var database = couchdb.use("awesome")
-        
-        // create document
-        var doc = MyDocument(city: "darmstadt", _id: "tight", _rev: nil)
-        database.post(doc) { response in
-            switch response {
-            case .Error(let error):
-                println(error)
-            case .Success(let res):
-                println(res.id)
-                println(res.ok)
-                println(res.rev)
-            }
-        }
+//        var database = couchdb.use("awesome")
+//        
+//        // create document
+//        var doc = MyDocument(city: "darmstadt", _id: "tight", _rev: nil)
+//        database.post(doc) { response in
+//            switch response {
+//            case .Error(let error):
+//                println(error)
+//            case .Success(let res):
+//                println(res.id)
+//                println(res.ok)
+//                println(res.rev)
+//            }
+//        }
         
         // get document
 //        var doc: MyDocument!
@@ -136,6 +136,15 @@ class ViewController: UIViewController {
 //            }
 //            
 //        }
+        
+        var test = QueryParameters(descending: true, endkey: "awesome", keys: ["one", "two", "three"])
+        var q = test.encode()
+        println(q)
+        println(q.stringByAddingPercentEncodingWithAllowedCharacters(.URLQueryAllowedCharacterSet())!)
+        
+        
+        var tight = Awesome()
+        println(tight.encode())
         
     }
 

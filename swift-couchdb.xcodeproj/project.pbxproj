@@ -15,6 +15,7 @@
 		3B068B111B34A21E00F27CBF /* swift_couchdbTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B068B101B34A21E00F27CBF /* swift_couchdbTests.swift */; };
 		3B068B1B1B34A23200F27CBF /* CouchDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B068B1A1B34A23200F27CBF /* CouchDB.swift */; };
 		3B068B1D1B34A42D00F27CBF /* HTTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B068B1C1B34A42D00F27CBF /* HTTP.swift */; };
+		3BC261F01B392C5D0013FC2E /* QueryString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC261EF1B392C5D0013FC2E /* QueryString.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +41,7 @@
 		3B068B101B34A21E00F27CBF /* swift_couchdbTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = swift_couchdbTests.swift; sourceTree = "<group>"; };
 		3B068B1A1B34A23200F27CBF /* CouchDB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CouchDB.swift; sourceTree = "<group>"; };
 		3B068B1C1B34A42D00F27CBF /* HTTP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTP.swift; sourceTree = "<group>"; };
+		3BC261EF1B392C5D0013FC2E /* QueryString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryString.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +87,7 @@
 				3B068AFC1B34A21E00F27CBF /* ViewController.swift */,
 				3B068B1A1B34A23200F27CBF /* CouchDB.swift */,
 				3B068B1C1B34A42D00F27CBF /* HTTP.swift */,
+				3BC261EF1B392C5D0013FC2E /* QueryString.swift */,
 				3B068AFE1B34A21E00F27CBF /* Main.storyboard */,
 				3B068B011B34A21E00F27CBF /* Images.xcassets */,
 				3B068B031B34A21E00F27CBF /* LaunchScreen.xib */,
@@ -219,6 +222,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3B068AFD1B34A21E00F27CBF /* ViewController.swift in Sources */,
+				3BC261F01B392C5D0013FC2E /* QueryString.swift in Sources */,
 				3B068B1D1B34A42D00F27CBF /* HTTP.swift in Sources */,
 				3B068AFB1B34A21E00F27CBF /* AppDelegate.swift in Sources */,
 				3B068B1B1B34A23200F27CBF /* CouchDB.swift in Sources */,
@@ -419,6 +423,7 @@
 				3B068B161B34A21E00F27CBF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3B068B171B34A21E00F27CBF /* Build configuration list for PBXNativeTarget "swift-couchdbTests" */ = {
 			isa = XCConfigurationList;
@@ -427,6 +432,7 @@
 				3B068B191B34A21E00F27CBF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

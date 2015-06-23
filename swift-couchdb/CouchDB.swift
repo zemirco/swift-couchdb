@@ -260,6 +260,40 @@ public class View {
 }
 
 
+
+/**
+ * Query params
+ */
+public class QueryParameters: QueryString {
+    
+    public var conflicts: Bool?
+    public var descending: Bool?
+    public var endkey: String?
+    public var endkey_docid: String?
+    public var group: Bool?
+    public var group_level: Int?
+    public var include_docs: Bool?
+    public var attachments: Bool?
+    public var att_encoding_info: Bool?
+    public var inclusive_end: Bool?
+    public var key: String?
+    public var keys: [String]?
+    public var limit: Int?
+    public var reduce: Bool?
+    public var skip: Int?
+    public var stale: String?
+    public var startkey: String?
+    public var startkey_docid: String?
+    public var update_seq: Bool?
+    
+    public override init() {
+        super.init()
+    }
+    
+}
+
+
+
 /**
  * Database
  */
