@@ -32,7 +32,7 @@ public class QueryString {
             }
             
             else if child.valueType is Bool.Type {
-                params.append("\(name)=\(child.value)")
+                params.append(handleInt(name, value: child.value))
             }
             
             else if child.valueType is Int.Type {
@@ -40,11 +40,7 @@ public class QueryString {
             }
             
             else if child.valueType is [String].Type {
-                if let arr = child.value as? [String] {
-                    var vals = arr.map() {"\"\($0)\""}
-                    var values = ",".join(vals)
-                    params.append("\(name)=[\(values)]")
-                }
+                params.append(handleArrayString(name, value: child.value))
             }
             
             else {
@@ -61,6 +57,14 @@ public class QueryString {
                         
                         else if sub[0].1.valueType is Int.Type {
                             params.append(handleInt(name, value: sub[0].1.value))
+                        }
+                        
+                        else if sub[0].1.valueType is Bool.Type {
+                            params.append(handleInt(name, value: sub[0].1.value))
+                        }
+                        
+                        else if sub[0].1.valueType is [String].Type {
+                            params.append(handleArrayString(name, value: sub[0].1.value))
                         }
                         
                     }
@@ -80,8 +84,18 @@ public class QueryString {
         return "\(key)=\"\(value)\""
     }
     
+    // handle Int (and Bool)
     private func handleInt(key: String, value: Any) -> String {
         return "\(key)=\(value)"
+    }
+    
+    // handle [String]
+    private func handleArrayString(key: String, value: Any) -> String {
+        if let arr = value as? [String] {
+            var values = ",".join(arr.map() {"\"\($0)\""})
+            return "\(key)=[\(values)]"
+        }
+        return ""
     }
     
 }

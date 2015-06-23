@@ -221,9 +221,9 @@ public class Document {
 public class DesignDocument: Document {
     
     public let language: String = "javascript"
-    public var views: [String: View]
+    public var views: [String: DesignDocumentView]
     
-    public init(_id: String?, _rev: String?, views: [String: View]) {
+    public init(_id: String?, _rev: String?, views: [String: DesignDocumentView]) {
         self.views = views
         super.init(_id: "_design/\(_id!)", _rev: _rev)
     }
@@ -248,7 +248,7 @@ public class DesignDocument: Document {
 /**
  * View
  */
-public class View {
+public class DesignDocumentView {
     public var map: String
     public var reduce: String?
     
@@ -263,6 +263,8 @@ public class View {
 
 /**
  * Query params
+ *
+ * http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
  */
 public class QueryParameters: QueryString {
     
@@ -415,4 +417,82 @@ public class Database {
         }
     }
     
+    /**
+     * Use certain view (design document)
+     */
+    public func view(name: String) -> View {
+        return View(url: "\(self.url)_design/\(name)/")
+    }
+    
+}
+
+
+
+/**
+ * View
+ */
+public class View {
+    
+    public struct GETResponse {
+        public var offset: Int!
+//        public var rows: [Row]!
+        public var total_rows: Int!
+//        public var update_seq: Int!
+        
+        public init(data: AnyObject) {
+            if let dict = data as? [String: AnyObject] {
+                if
+                    let offset = dict["offset"] as? Int,
+//                    let rows = dict["rows"] as? [Row],
+                    let total_rows = dict["total_rows"] as? Int {
+//                    let update_seq = dict["update_seq"] as? Int {
+                        self.offset = offset
+//                        self.rows = rows
+                        self.total_rows = total_rows
+//                        self.update_seq = update_seq
+                }
+            }
+        }
+    }
+    
+//    public struct Row {
+//        public var id: String!
+//        public var key: AnyObject!
+//        public var value: AnyObject!
+//        
+//        public init(data: AnyObject) {
+//            if let dict = data as? [String: AnyObject] {
+//                if
+//                    let id = dict["id"] as? String {
+//                        self.id = id
+//                        self.key = dict["key"]
+//                        self.value = dict["value"]
+//                }
+//            }
+//        }
+//    }
+    
+    private var url: String
+    
+    public init(url: String) {
+        self.url = url.hasSuffix("/") ? url : "\(url)/"
+    }
+    
+    public enum Response {
+        case Success(GETResponse)
+        case Error(NSError)
+    }
+    
+    public func get(name: String, query: QueryParameters, done: (Response) -> Void) {
+        var params = query.encode().stringByAddingPercentEncodingWithAllowedCharacters(.URLQueryAllowedCharacterSet())!
+        HTTP.get("\(self.url)_view/\(name)?\(params)") { response in
+            switch response {
+            case .Error(let error):
+                done(.Error(error))
+            case .Success(let json, let res):
+                println(json)
+                done(.Success(GETResponse(data: json)))
+            }
+        }
+    }
 }

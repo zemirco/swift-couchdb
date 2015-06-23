@@ -66,10 +66,11 @@ class ViewController: UIViewController {
 //            }
 //        }
         
-//        var database = couchdb.use("awesome")
-//        
-//        // create document
+        var database = couchdb.use("awesome")
+//
+        // create document
 //        var doc = MyDocument(city: "darmstadt", _id: "tight", _rev: nil)
+//        var doc = MyDocument(city: "berlin", _id: nil, _rev: nil)
 //        database.post(doc) { response in
 //            switch response {
 //            case .Error(let error):
@@ -137,15 +138,29 @@ class ViewController: UIViewController {
 //            
 //        }
         
-        var test = QueryParameters(descending: true, endkey: "awesome", keys: ["one", "two", "three"])
+        var test = QueryParameters()
+        test.descending = true
+        test.endkey = "awesome"
+        test.keys = ["one", "two", "three"]
         var q = test.encode()
         println(q)
         println(q.stringByAddingPercentEncodingWithAllowedCharacters(.URLQueryAllowedCharacterSet())!)
         
         
-        var tight = Awesome()
-        println(tight.encode())
+        // query view
+        var view = database.view("cities")
         
+        var params = QueryParameters()
+        params.limit = 3
+        view.get("citiesByName", query: params) { response in
+            switch response {
+            case .Error(let error):
+                println(error)
+            case .Success(let res):
+                println(res.offset)
+                println(res.total_rows)
+            }
+        }
     }
 
     override func didReceiveMemoryWarning() {
