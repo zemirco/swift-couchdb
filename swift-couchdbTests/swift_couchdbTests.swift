@@ -47,6 +47,8 @@ class swift_couchdbTests: XCTestCase {
         super.tearDown()
     }
     
+    
+    
     func testCreateDatabase() {
         let expectation = expectationWithDescription("create database")
         var name = "test-create-database"
@@ -65,6 +67,8 @@ class swift_couchdbTests: XCTestCase {
         waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
+    
+    
     func testDeleteDatabase() {
         let expectation = expectationWithDescription("delete database")
         var name = "test-delete-database"
@@ -81,6 +85,8 @@ class swift_couchdbTests: XCTestCase {
         }
         waitForExpectationsWithTimeout(timeout, handler: nil)
     }
+    
+    
     
     func testCreateDocument() {
         let expectation = expectationWithDescription("create document")
@@ -102,6 +108,8 @@ class swift_couchdbTests: XCTestCase {
         }
         waitForExpectationsWithTimeout(timeout, handler: nil)
     }
+    
+    
     
     func testGetDocument() {
         let expectation = expectationWithDescription("get document")
@@ -127,6 +135,8 @@ class swift_couchdbTests: XCTestCase {
         }
         waitForExpectationsWithTimeout(timeout, handler: nil)
     }
+    
+    
     
     func testDeleteDocument() {
         let expectation = expectationWithDescription("delete document")
@@ -157,6 +167,8 @@ class swift_couchdbTests: XCTestCase {
         }
         waitForExpectationsWithTimeout(timeout, handler: nil)
     }
+    
+    
     
     func testEditDocument() {
         let expectation = expectationWithDescription("edit document")
@@ -190,7 +202,40 @@ class swift_couchdbTests: XCTestCase {
         waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
+    
+    
     func testCreateDesignDocument() {
+        let expectation = expectationWithDescription("create design document")
+        var name = "create-design-document"
+        
+        // create design document
+        var map = "function(doc) { if (doc.city) { emit(doc.city) } }"
+        var view = DesignDocumentView(map: map, reduce: nil)
+        var designDocument = DesignDocument(_id: "cities", _rev: nil, views: [
+                "byName": view
+        ])
+        
+        // add document to db
+        couchdb.create(name) { _ in
+            var database = self.couchdb.use(name)
+            database.put(designDocument) { response in
+                switch response {
+                case .Error(let error):
+                    XCTAssertNil(error)
+                case .Success(let success):
+                    XCTAssert(success.ok!)
+                }
+                expectation.fulfill()
+            }
+        }
+        
+        waitForExpectationsWithTimeout(timeout, handler: nil)
+        
+    }
+    
+    
+    
+    func testQueryView() {
         
     }
     
