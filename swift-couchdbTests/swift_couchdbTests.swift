@@ -268,49 +268,56 @@ class swift_couchdbTests: XCTestCase {
     
     
     
-//    func testQueryView() {
-//        let expectation = expectationWithDescription("query view")
-//        var name = "query-view"
-//        
-//        // create design document
-//        var map = "function(doc) { if (doc.city) { emit(doc.city) } }"
-//        var view = DesignDocumentView(map: map, reduce: nil)
-//        var designDocument = DesignDocument(_id: "cities", _rev: nil, views: [
-//            "byName": view
-//        ])
-//        
-//        // add design document to db
-//        couchdb.create(name) { response in
-//            var database = self.couchdb.use(name)
-//            database.put(designDocument) { _ in
-//                
-//                // add some dummy documents
-//                
-////                switch response {
-////                case .Error(let error):
-////                    XCTAssertNil(error)
-////                case .Success(let success):
-////                    XCTAssert(success.ok!)
-////                }
-//                
-//                
-//                self.couchdb.delete(name) { _ in
-//                    expectation.fulfill()
-//                }
-//            }
-//        }
-//        
-//        waitForExpectationsWithTimeout(timeout, handler: nil)
-//    }
-    
-    
-    
-    private func generateDocuments(database: Database, done: () -> Void) {
-        var berlin = MyDocument(city: "berlin", _id: nil, _rev: nil)
-        var frankfurt = MyDocument(city: "frankfurt", _id: nil, _rev: nil)
-        var munich = MyDocument(city: "munich", _id: nil, _rev: nil)
-        var duesseldorf = MyDocument(city: "duesseldorf", _id: nil, _rev: nil)
-        var darmstadt = MyDocument(city: "darmstadt", _id: nil, _rev: nil)
+    func testQueryView() {
+        let expectation = expectationWithDescription("query view")
+        var name = "query-view"
+        
+        // create design document
+        var map = "function(doc) { if (doc.city) { emit(doc.city) } }"
+        var view = DesignDocumentView(map: map, reduce: nil)
+        var designDocument = DesignDocument(_id: "cities", _rev: nil, views: [
+            "byName": view
+        ])
+        
+        // add design document to db
+        couchdb.create(name) { response in
+            var database = self.couchdb.use(name)
+            database.put(designDocument) { _ in
+                
+                // add some dummy documents
+                var berlin = MyDocument(city: "berlin", _id: nil, _rev: nil)
+                var frankfurt = MyDocument(city: "frankfurt", _id: nil, _rev: nil)
+                var munich = MyDocument(city: "munich", _id: nil, _rev: nil)
+                var duesseldorf = MyDocument(city: "duesseldorf", _id: nil, _rev: nil)
+                var darmstadt = MyDocument(city: "darmstadt", _id: nil, _rev: nil)
+                
+                database.bulk([berlin, frankfurt, munich, duesseldorf, darmstadt]) { _ in
+                    
+                    // query view
+                    var view = database.view("cities")
+                    var params = QueryParameters()
+                    params.limit = 3
+                    params.descending = true
+                    view.get("byName", query: params) { response in
+                        switch response {
+                        case .Error(let error):
+                            XCTAssertNil(error)
+                        case .Success(let response):
+                            println(response.rows)
+                            XCTAssertEqual(response.rows.count, 3)
+                            XCTAssertEqual(response.rows[0].key, "munich")
+                        }
+                        self.couchdb.delete(name) { _ in
+                            expectation.fulfill()
+                        }
+                    }
+                    
+                }
+                
+            }
+        }
+        
+        waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
 }
