@@ -410,6 +410,65 @@ public class Database {
     }
     
     /**
+     * Create multiple documents with a single request
+     * 
+     * http://docs.couchdb.org/en/latest/api/database/bulk-api.html
+     */
+    public struct BulkHTTPResponse {
+        public var id: String!
+        public var rev: String!
+        public var error: String?
+        public var reason: String?
+        
+        public init(data: AnyObject) {
+            if let dict = data as? [String: AnyObject] {
+                if let
+                    id = dict["id"] as? String,
+                    rev = dict["rev"] as? String {
+                        self.id = id
+                        self.rev = rev
+                }
+                if let error = dict["error"] as? String {
+                    self.error = error
+                }
+                if let reason = dict["reason"] as? String {
+                    self.reason = reason
+                }
+            }
+        }
+        
+    }
+    
+    public enum BulkResponse {
+        case Success([BulkHTTPResponse])
+        case Error(NSError)
+    }
+    
+    public func bulk(documents: [Document], done: (BulkResponse) -> Void) {
+        var docs = documents.map() { $0.serialize() }
+        var data = [
+            "docs": docs
+        ]
+        HTTP.post("\(self.url)_bulk_docs", data: data) { response in
+            switch response {
+            case .Error(let error):
+                done(.Error(error))
+            case .Success(let json, let res):
+                if res.statusCode != 201 {
+                    done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
+                        NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
+                    ])))
+                    return
+                }
+                if let data = json as? [AnyObject] {
+                    var arr = data.map() { BulkHTTPResponse(data: $0) }
+                    done(.Success(arr))
+                }
+            }
+        }
+    }
+    
+    /**
      * Use certain view (design document)
      */
     public func view(name: String) -> View {
