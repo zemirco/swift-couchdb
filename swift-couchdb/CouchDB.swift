@@ -105,6 +105,7 @@ public class CouchDB {
                     done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
                         NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
                         ])))
+                    return
                 }
                 done(.Success(PUTCreateSuccess(data: json)))
             }
@@ -367,6 +368,7 @@ public class Database {
                     done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
                         NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
                     ])))
+                    return
                 }
                 done(.Success(POSTDatabaseReponse(data: json)))
             }
