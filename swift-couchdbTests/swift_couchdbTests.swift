@@ -12,6 +12,31 @@ class swift_couchdbTests: XCTestCase {
     
     
     
+    class MyDocument: Document {
+        
+        var city: String!
+        
+        init(city: String, _id: String?, _rev: String?) {
+            self.city = city
+            super.init(_id: _id, _rev: _rev)
+        }
+        
+        override init(data: AnyObject) {
+            if let city = data["city"] as? String {
+                self.city = city
+            }
+            super.init(data: data)
+        }
+        
+        override func serialize() -> [String: AnyObject] {
+            self.dictionary["city"] = self.city
+            return super.serialize()
+        }
+        
+    }
+    
+    
+    
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -30,6 +55,38 @@ class swift_couchdbTests: XCTestCase {
                 XCTAssertNil(error)
             case .Success(let success):
                 XCTAssert(success.ok!)
+            }
+            expectation.fulfill()
+        }
+        waitForExpectationsWithTimeout(timeout, handler: nil)
+    }
+    
+    func testCreateDocument() {
+        var doc = MyDocument(city: "darmstadt", _id: "home", _rev: nil)
+        var database = couchdb.use("test-database")
+        let expectation = expectationWithDescription("create document")
+        database.post(doc) { response in
+            switch response {
+            case .Error(let error):
+                XCTAssertNil(error)
+            case .Success(let success):
+                XCTAssert(success.ok!)
+            }
+            expectation.fulfill()
+        }
+        waitForExpectationsWithTimeout(timeout, handler: nil)
+    }
+    
+    func testGetDocument() {
+        var database = couchdb.use("test-database")
+        let expectation = expectationWithDescription("get document")
+        database.get("home") { response in
+            switch response {
+            case .Error(let error):
+                XCTAssertNil(error)
+            case .Success(let data):
+                var doc = MyDocument(data: data)
+                XCTAssertEqual(doc.city, "darmstadt")
             }
             expectation.fulfill()
         }
