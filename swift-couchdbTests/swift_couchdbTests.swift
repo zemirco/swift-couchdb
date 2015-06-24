@@ -48,7 +48,7 @@ class swift_couchdbTests: XCTestCase {
     }
     
     func testCreateDatabase() {
-        let expectation = expectationWithDescription("create")
+        let expectation = expectationWithDescription("create database")
         var name = "test-create-database"
         couchdb.create(name) { response in
             switch response {
@@ -66,7 +66,7 @@ class swift_couchdbTests: XCTestCase {
     }
     
     func testDeleteDatabase() {
-        let expectation = expectationWithDescription("delete")
+        let expectation = expectationWithDescription("delete database")
         var name = "test-delete-database"
         couchdb.create(name) { _ in
             self.couchdb.delete(name) { response in
@@ -126,6 +126,72 @@ class swift_couchdbTests: XCTestCase {
             }
         }
         waitForExpectationsWithTimeout(timeout, handler: nil)
+    }
+    
+    func testDeleteDocument() {
+        let expectation = expectationWithDescription("delete document")
+        var name = "test-delete-document"
+        couchdb.create(name) { _ in
+            var database = self.couchdb.use(name)
+            var doc = MyDocument(city: "darmstadt", _id: nil, _rev: nil)
+            database.post(doc) { res in
+                switch res {
+                case .Error(let error):
+                    XCTAssertNil(error)
+                case .Success(let success):
+                    doc._id = success.id
+                    doc._rev = success.rev
+                    database.delete(doc) { success in
+                        switch success {
+                        case .Error(let error):
+                            XCTAssertNil(error)
+                        case .Success(let success):
+                            XCTAssert(success.ok!)
+                        }
+                        self.couchdb.delete(name) { _ in
+                            expectation.fulfill()
+                        }
+                    }
+                }
+            }
+        }
+        waitForExpectationsWithTimeout(timeout, handler: nil)
+    }
+    
+    func testEditDocument() {
+        let expectation = expectationWithDescription("edit document")
+        var name = "test-edit-document"
+        couchdb.create(name) { _ in
+            var database = self.couchdb.use(name)
+            var doc = MyDocument(city: "darmstadt", _id: "edit", _rev: nil)
+            database.post(doc) { _ in
+                database.get("edit") { response in
+                    switch response {
+                    case .Error(let error):
+                        XCTAssertNil(error)
+                    case .Success(let success):
+                        var docWithRev = MyDocument(data: success)
+                        docWithRev.city = "frankfurt"
+                        database.put(docWithRev) { res in
+                            switch res {
+                            case .Error(let error):
+                                XCTAssertNil(error)
+                            case .Success(let success):
+                                XCTAssert(success.ok!)
+                            }
+                            self.couchdb.delete(name) { _ in
+                                expectation.fulfill()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        waitForExpectationsWithTimeout(timeout, handler: nil)
+    }
+    
+    func testCreateDesignDocument() {
+        
     }
     
 }

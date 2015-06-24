@@ -348,6 +348,12 @@ public class Database {
             case .Error(let error):
                 done(.Error(error))
             case .Success(let json, let res):
+                if res.statusCode != 201 {
+                    done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
+                        NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
+                    ])))
+                    return
+                }
                 done(.Success(POSTDatabaseReponse(data: json)))
             }
         }
