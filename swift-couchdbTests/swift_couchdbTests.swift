@@ -303,7 +303,6 @@ class swift_couchdbTests: XCTestCase {
                         case .Error(let error):
                             XCTAssertNil(error)
                         case .Success(let response):
-                            println(response.rows)
                             XCTAssertEqual(response.rows.count, 3)
                             XCTAssertEqual(response.rows[0].key, "munich")
                         }
@@ -318,6 +317,14 @@ class swift_couchdbTests: XCTestCase {
         }
         
         waitForExpectationsWithTimeout(timeout, handler: nil)
+    }
+    
+    func testLogin() {
+        
+    }
+    
+    func testLogout() {
+        
     }
     
 }

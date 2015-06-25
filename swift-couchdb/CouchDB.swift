@@ -64,6 +64,12 @@ public class CouchDB {
             case .Error(let error):
                 done(.Error(error))
             case .Success(let json, let response):
+                if response.statusCode != 200 {
+                    done(.Error(NSError(domain: DOMAIN, code: response.statusCode, userInfo: [
+                        NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(response.statusCode)
+                    ])))
+                    return
+                }
                 done(.Success(POSTSessionResponse(data: json)))
             }
         }
@@ -104,7 +110,7 @@ public class CouchDB {
                 if res.statusCode != 201 {
                     done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
                         NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
-                        ])))
+                    ])))
                     return
                 }
                 done(.Success(PUTCreateSuccess(data: json)))
@@ -549,7 +555,12 @@ public class View {
             case .Error(let error):
                 done(.Error(error))
             case .Success(let json, let res):
-                println(json)
+                if res.statusCode != 200 {
+                    done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
+                        NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
+                    ])))
+                    return
+                }
                 done(.Success(GETResponse(data: json)))
             }
         }
