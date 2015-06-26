@@ -340,6 +340,42 @@ class swift_couchdbTests: XCTestCase {
     
     
     
+    func testDeleteUser() {
+        let expectation = expectationWithDescription("delete user")
+        
+        // create user
+        var john = CouchDB.User(name: "john", password: "secret", roles: ["awesome"])
+        couchdb.createUser(john) { _ in
+            
+            // delete user
+            var database = self.couchdb.use("_users")
+            database.get("org.couchdb.user:john") { response in
+                switch response {
+                case .Error(let error):
+                    XCTAssertNil(error)
+                case .Success(let json):
+                    var doc = Document(data: json)
+                    
+                    database.delete(doc) { res in
+                        switch res {
+                        case .Error(let error):
+                            XCTAssertNil(error)
+                        case .Success(let success):
+                            XCTAssert(success.ok!)
+                        }
+                        expectation.fulfill()
+                    }
+                    
+                }
+            }
+            
+        }
+        
+        waitForExpectationsWithTimeout(timeout, handler: nil)
+    }
+    
+    
+    
 //    func testLogin() {
 //        let expectation = expectationWithDescription("login")
 //        
