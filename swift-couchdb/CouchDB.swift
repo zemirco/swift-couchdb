@@ -101,7 +101,7 @@ public class CouchDB {
         case Error(NSError)
     }
     
-    public func create(database: String, done: (CreateResponse) -> Void) {
+    public func createDatabase(database: String, done: (CreateResponse) -> Void) {
         HTTP.put("\(self.url)\(database)") { response in
             switch response {
             case .Error(let error):
@@ -156,6 +156,60 @@ public class CouchDB {
                 done(DELReponse.Success(DELETEResponse(data: json)))
             }
             
+        }
+    }
+    
+    
+    
+    /**
+     * Create user
+     */
+    
+    /**
+     * User struct
+     * 
+     * http://docs.couchdb.org/en/latest/intro/security.html#creating-new-user
+     */
+    public struct User {
+        public var name: String!
+        public var password: String!
+        public var roles: [String]!
+        private let type: String = "user"
+        
+        public init(name: String, password: String, roles: [String]) {
+            self.name = name
+            self.password = password
+            self.roles = roles
+        }
+        
+        public func serialize() -> [String: AnyObject] {
+            var dict = [String: AnyObject]()
+            dict["name"] = name
+            dict["password"] = password
+            dict["roles"] = roles
+            dict["type"] = type
+            return dict
+        }
+    }
+    
+    /**
+     * Create user in db
+     */
+    public func createUser(user: User, done: (Database.POSTResponse) -> Void) {
+        var data = user.serialize()
+        HTTP.put("\(self.url)_users/org.couchdb.user:\(user.name)", data: data) { response in
+            switch response {
+            case .Error(let error):
+                done(.Error(error))
+            case .Success(let json, let res):
+                if res.statusCode != 201 {
+                    done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
+                        NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
+                    ])))
+                    return
+                }
+                done(.Success(Database.POSTDatabaseReponse(data: json)))
+            }
         }
     }
     

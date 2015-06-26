@@ -32,6 +32,18 @@ class ViewController: UIViewController {
         
         var couchdb = CouchDB(url: "http://localhost:5984", name: nil, password: nil)
         
+//        var john = CouchDB.User(name: "john", password: "secret", roles: ["awesome"])
+//        couchdb.createUser(john) { response in
+//            switch response {
+//            case .Error(let error):
+//                println(error)
+//            case .Success(let res):
+//                println(res.id)
+//                println(res.ok)
+//                println(res.rev)
+//            }
+//        }
+        
 //        couchdb.create("tight") { response in
 //            switch response {
 //            case .Error(let error):
