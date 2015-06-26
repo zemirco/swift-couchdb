@@ -270,7 +270,7 @@ class swift_couchdbTests: XCTestCase {
     
     func testQueryView() {
         let expectation = expectationWithDescription("query view")
-        var name = "query-view"
+        var name = "test-query-view"
         
         // create design document
         var map = "function(doc) { if (doc.city) { emit(doc.city) } }"
@@ -280,7 +280,7 @@ class swift_couchdbTests: XCTestCase {
         ])
         
         // add design document to db
-        couchdb.createDatabase(name) { response in
+        couchdb.createDatabase(name) { _ in
             var database = self.couchdb.use(name)
             database.put(designDocument) { _ in
                 
@@ -376,11 +376,42 @@ class swift_couchdbTests: XCTestCase {
     
     
     
-//    func testLogin() {
-//        let expectation = expectationWithDescription("login")
-//        
-//        waitForExpectationsWithTimeout(timeout, handler: nil)
-//    }
+    func testLogin() {
+        let expectation = expectationWithDescription("login")
+        
+        // create user first
+        var steve = CouchDB.User(name: "steve", password: "password", roles: ["awesome"])
+        couchdb.createUser(steve) { _ in
+            
+            // test login
+            self.couchdb.login("steve", password: "password") { response in
+                switch response {
+                case .Error(let error):
+                    XCTAssertNil(error)
+                case .Success(let success):
+                    XCTAssert(success.ok!)
+                }
+                
+                // delete user
+                var database = self.couchdb.use("_users")
+                database.get("org.couchdb.user:steve") { response in
+                    switch response {
+                    case .Error(let error):
+                        XCTAssertNil(error)
+                    case .Success(let json):
+                        var doc = Document(data: json)
+                        
+                        database.delete(doc) { _ in
+                            expectation.fulfill()
+                        }
+                    }
+                }
+            }
+            
+        }
+        
+        waitForExpectationsWithTimeout(timeout, handler: nil)
+    }
     
     
     

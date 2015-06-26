@@ -30,7 +30,7 @@ public class CouchDB {
     *
     * http://docs.couchdb.org/en/latest/api/server/authn.html#post--_session
     */
-    public struct POSTSessionResponse {
+    public struct POSTHTTPSessionResponse {
         public var ok: Bool!
         public var name: String!
         public var roles: [String]!
@@ -50,14 +50,14 @@ public class CouchDB {
     }
     
     public enum LoginResponse {
-        case Success(POSTSessionResponse)
+        case Success(POSTHTTPSessionResponse)
         case Error(NSError)
     }
     
-    public func login(done: (LoginResponse) -> Void) {
+    public func login(name: String, password: String, done: (LoginResponse) -> Void) {
         var data = [
-            "name": self.name!,
-            "password": self.password!
+            "name": name,
+            "password": password
         ]
         HTTP.post("\(self.url)_session", data: data) { result in
             switch result {
@@ -70,7 +70,7 @@ public class CouchDB {
                     ])))
                     return
                 }
-                done(.Success(POSTSessionResponse(data: json)))
+                done(.Success(POSTHTTPSessionResponse(data: json)))
             }
         }
     }

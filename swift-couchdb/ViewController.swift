@@ -30,7 +30,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        var couchdb = CouchDB(url: "http://localhost:5984", name: nil, password: nil)
+//        var couchdb = CouchDB(url: "http://localhost:5984", name: nil, password: nil)
         
 //        var john = CouchDB.User(name: "john", password: "secret", roles: ["awesome"])
 //        couchdb.createUser(john) { response in
@@ -78,7 +78,7 @@ class ViewController: UIViewController {
 //            }
 //        }
         
-        var database = couchdb.use("awesome")
+//        var database = couchdb.use("awesome")
 //
         // create document
 //        var doc = MyDocument(city: "darmstadt", _id: "tight", _rev: nil)
@@ -150,34 +150,34 @@ class ViewController: UIViewController {
 //            
 //        }
         
-        var test = QueryParameters()
-        test.descending = true
-        test.endkey = "awesome"
-        test.keys = ["one", "two", "three"]
-        var q = test.encode()
-        println(q)
-        println(q.stringByAddingPercentEncodingWithAllowedCharacters(.URLQueryAllowedCharacterSet())!)
+//        var test = QueryParameters()
+//        test.descending = true
+//        test.endkey = "awesome"
+//        test.keys = ["one", "two", "three"]
+//        var q = test.encode()
+//        println(q)
+//        println(q.stringByAddingPercentEncodingWithAllowedCharacters(.URLQueryAllowedCharacterSet())!)
         
         
-        // query view
-        var view = database.view("cities")
-        
-        var params = QueryParameters()
-        params.limit = 3
-        params.descending = true
-        view.get("citiesByName", query: params) { response in
-            switch response {
-            case .Error(let error):
-                println(error)
-            case .Success(let res):
-                println(res.offset)
-                println(res.total_rows)
-                for row in res.rows {
-                    println(row.id)
-                    println(row.key)
-                }
-            }
-        }
+//        // query view
+//        var view = database.view("cities")
+//        
+//        var params = QueryParameters()
+//        params.limit = 3
+//        params.descending = true
+//        view.get("citiesByName", query: params) { response in
+//            switch response {
+//            case .Error(let error):
+//                println(error)
+//            case .Success(let res):
+//                println(res.offset)
+//                println(res.total_rows)
+//                for row in res.rows {
+//                    println(row.id)
+//                    println(row.key)
+//                }
+//            }
+//        }
     }
 
     override func didReceiveMemoryWarning() {
