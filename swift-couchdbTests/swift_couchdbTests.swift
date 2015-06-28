@@ -416,7 +416,23 @@ class swift_couchdbTests: XCTestCase {
     
     
     func testLogout() {
+        let expectation = expectationWithDescription("logout")
         
+        // create user
+        var nitika = CouchDB.User(name: "nitika", password: "pwd", roles: ["dog"])
+        couchdb.createUser(nitika) { _ in
+            
+            // login
+            self.couchdb.login("nitika", password: "pwd") { _ in
+                
+                // logout
+                
+                
+            }
+            
+        }
+        
+        waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     

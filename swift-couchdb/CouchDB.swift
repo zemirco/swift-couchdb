@@ -78,6 +78,102 @@ public class CouchDB {
     
     
     /**
+     * Get session
+     * 
+     * http://docs.couchdb.org/en/latest/api/server/authn.html#get--_session
+     */
+    
+    // http://docs.couchdb.org/en/latest/json-structure.html#user-context-object
+    public struct UserContext {
+        public var name: String!
+        public var roles: [String]!
+        
+        public init(data: AnyObject) {
+            if let d = data as? [String: AnyObject] {
+                if let
+                    name = d["name"] as? String,
+                    roles = d["roles"] as? [String] {
+                        self.name = name
+                        self.roles = roles
+                }
+            }
+        }
+    }
+    
+    public struct GetSessionHTTPResponseInfo {
+        public var authenticated: String!
+        public var authentication_db: String!
+        public var authentication_handlers: [String]!
+        
+        public init(data: AnyObject) {
+            if let d = data as? [String: AnyObject] {
+                if let
+                    authenticated = d["authenticated"] as? String,
+                    authentication_db = d["authentication_db"] as? String,
+                    authentication_handlers = d["authentication_handlers"] as? [String] {
+                        self.authenticated = authenticated
+                        self.authentication_db = authentication_db
+                        self.authentication_handlers = authentication_handlers
+                }
+                
+            }
+        }
+    }
+    
+    public struct GetSessionHTTPResponse {
+        public var info: GetSessionHTTPResponseInfo!
+        public var ok: Bool!
+        public var userCtx: UserContext!
+        
+        public init(data: AnyObject) {
+            if let d = data as? [String: AnyObject] {
+                if let
+                    info = d["info"] as? [String: AnyObject],
+                    ok = d["ok"] as? Bool,
+                    userCtx = d["userCtx"] as? [String: AnyObject] {
+                        self.info = GetSessionHTTPResponseInfo(data: info)
+                        self.ok = ok
+                        self.userCtx = UserContext(data: userCtx)
+                }
+            }
+        }
+    }
+    
+    public func getSession() {
+        
+    }
+    
+    
+    
+    /**
+     * Logout
+     *
+     * http://docs.couchdb.org/en/latest/api/server/authn.html#delete--_session
+     */
+    public struct DeleteHTTPSessionResponse {
+        public var ok: Bool!
+        
+        public init(data: AnyObject) {
+            if let d = data as? [String: AnyObject] {
+                if let ok = d["ok"] as? Bool {
+                    self.ok = ok
+                }
+            }
+        }
+    }
+    
+    public enum LogoutResponse {
+        case Success(DeleteHTTPSessionResponse)
+        case Error(NSError)
+    }
+    
+    public func logout(done: (LogoutResponse) -> Void) {
+        
+    }
+    
+    
+    
+    /**
      * Create database
      *
      * http://docs.couchdb.org/en/latest/api/database/common.html#put--db
