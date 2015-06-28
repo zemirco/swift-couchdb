@@ -139,8 +139,26 @@ public class CouchDB {
         }
     }
     
-    public func getSession() {
-        
+    public enum GetSessionResponse {
+        case Success(GetSessionHTTPResponse)
+        case Error(NSError)
+    }
+    
+    public func getSession(done: (GetSessionResponse) -> Void) {
+        HTTP.get("\(self.url)_session") { response in
+            switch response {
+            case .Error(let error):
+                done(.Error(error))
+            case .Success(let json, let res):
+                if res.statusCode != 200 {
+                    done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
+                        NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
+                    ])))
+                    return
+                }
+                done(.Success(GetSessionHTTPResponse(data: json)))
+            }
+        }
     }
     
     

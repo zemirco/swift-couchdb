@@ -415,18 +415,44 @@ class swift_couchdbTests: XCTestCase {
     
     
     
-    func testLogout() {
-        let expectation = expectationWithDescription("logout")
+    func testGetSession() {
+        let expectation = expectationWithDescription("get session")
         
         // create user
-        var nitika = CouchDB.User(name: "nitika", password: "pwd", roles: ["dog"])
-        couchdb.createUser(nitika) { _ in
+        var wiff = CouchDB.User(name: "wiff", password: "pwd", roles: ["dog"])
+        couchdb.createUser(wiff) { _ in
             
             // login
-            self.couchdb.login("nitika", password: "pwd") { _ in
+            self.couchdb.login("wiff", password: "pwd") { _ in
                 
-                // logout
-                
+                // get session
+                self.couchdb.getSession() { response in
+                    
+                    switch response {
+                    case .Error(let error):
+                        XCTAssertNil(error)
+                    case .Success(let res):
+                        XCTAssertEqual(res.info.authenticated, "cookie")
+                        XCTAssertEqual(res.userCtx.roles, ["dog"])
+                        XCTAssert(res.ok!)
+                    }
+                    
+                    // delete user
+                    var database = self.couchdb.use("_users")
+                    database.get("org.couchdb.user:wiff") { response in
+                        switch response {
+                        case .Error(let error):
+                            XCTAssertNil(error)
+                        case .Success(let json):
+                            var doc = Document(data: json)
+                            
+                            database.delete(doc) { _ in
+                                expectation.fulfill()
+                            }
+                        }
+                    }
+                    
+                }
                 
             }
             
@@ -434,6 +460,28 @@ class swift_couchdbTests: XCTestCase {
         
         waitForExpectationsWithTimeout(timeout, handler: nil)
     }
+    
+    
+    
+//    func testLogout() {
+//        let expectation = expectationWithDescription("logout")
+//        
+//        // create user
+//        var nitika = CouchDB.User(name: "nitika", password: "pwd", roles: ["dog"])
+//        couchdb.createUser(nitika) { _ in
+//            
+//            // login
+//            self.couchdb.login("nitika", password: "pwd") { _ in
+//                
+//                // logout
+//                
+//                
+//            }
+//            
+//        }
+//        
+//        waitForExpectationsWithTimeout(timeout, handler: nil)
+//    }
     
     
     
