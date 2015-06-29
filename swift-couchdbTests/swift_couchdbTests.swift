@@ -12,7 +12,7 @@ class swift_couchdbTests: XCTestCase {
     
     
     
-    class MyDocument: Document {
+    class MyDocument: CouchDB.Document {
         
         var city: String!
         
@@ -241,8 +241,8 @@ class swift_couchdbTests: XCTestCase {
         
         // create design document
         var map = "function(doc) { if (doc.city) { emit(doc.city) } }"
-        var view = DesignDocumentView(map: map, reduce: nil)
-        var designDocument = DesignDocument(_id: "cities", _rev: nil, views: [
+        var view = CouchDB.DesignDocumentView(map: map, reduce: nil)
+        var designDocument = CouchDB.DesignDocument(_id: "cities", _rev: nil, views: [
                 "byName": view
         ])
         
@@ -274,8 +274,8 @@ class swift_couchdbTests: XCTestCase {
         
         // create design document
         var map = "function(doc) { if (doc.city) { emit(doc.city) } }"
-        var view = DesignDocumentView(map: map, reduce: nil)
-        var designDocument = DesignDocument(_id: "cities", _rev: nil, views: [
+        var view = CouchDB.DesignDocumentView(map: map, reduce: nil)
+        var designDocument = CouchDB.DesignDocument(_id: "cities", _rev: nil, views: [
             "byName": view
         ])
         
@@ -295,7 +295,7 @@ class swift_couchdbTests: XCTestCase {
                     
                     // query view
                     var view = database.view("cities")
-                    var params = QueryParameters()
+                    var params = CouchDB.QueryParameters()
                     params.limit = 3
                     params.descending = true
                     view.get("byName", query: params) { response in
@@ -354,7 +354,7 @@ class swift_couchdbTests: XCTestCase {
                 case .Error(let error):
                     XCTAssertNil(error)
                 case .Success(let json):
-                    var doc = Document(data: json)
+                    var doc = CouchDB.Document(data: json)
                     
                     database.delete(doc) { res in
                         switch res {
@@ -399,7 +399,7 @@ class swift_couchdbTests: XCTestCase {
                     case .Error(let error):
                         XCTAssertNil(error)
                     case .Success(let json):
-                        var doc = Document(data: json)
+                        var doc = CouchDB.Document(data: json)
                         
                         database.delete(doc) { _ in
                             expectation.fulfill()
@@ -444,7 +444,7 @@ class swift_couchdbTests: XCTestCase {
                         case .Error(let error):
                             XCTAssertNil(error)
                         case .Success(let json):
-                            var doc = Document(data: json)
+                            var doc = CouchDB.Document(data: json)
                             
                             database.delete(doc) { _ in
                                 expectation.fulfill()
@@ -498,7 +498,7 @@ class swift_couchdbTests: XCTestCase {
                             case .Error(let error):
                                 XCTAssertNil(error)
                             case .Success(let json):
-                                var doc = Document(data: json)
+                                var doc = CouchDB.Document(data: json)
                                 
                                 database.delete(doc) { _ in
                                     expectation.fulfill()
