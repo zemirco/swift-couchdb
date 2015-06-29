@@ -59,7 +59,7 @@ class swift_couchdbTests: XCTestCase {
             case .Success(let success):
                 XCTAssert(success.ok!)
             }
-            self.couchdb.delete(name) { _ in
+            self.couchdb.deleteDatabase(name) { _ in
                 expectation.fulfill()
             }
             
@@ -73,7 +73,7 @@ class swift_couchdbTests: XCTestCase {
         let expectation = expectationWithDescription("delete database")
         var name = "test-delete-database"
         couchdb.createDatabase(name) { _ in
-            self.couchdb.delete(name) { response in
+            self.couchdb.deleteDatabase(name) { response in
                 switch response {
                 case .Error(let error):
                     XCTAssertNil(error)
@@ -101,7 +101,7 @@ class swift_couchdbTests: XCTestCase {
                 case .Success(let success):
                     XCTAssert(success.ok!)
                 }
-                self.couchdb.delete(name) { _ in
+                self.couchdb.deleteDatabase(name) { _ in
                     expectation.fulfill()
                 }
             }
@@ -126,7 +126,7 @@ class swift_couchdbTests: XCTestCase {
                         var doc = MyDocument(data: data)
                         XCTAssertEqual(doc.city, "darmstadt")
                     }
-                    self.couchdb.delete(name) { _ in
+                    self.couchdb.deleteDatabase(name) { _ in
                         expectation.fulfill()
                     }
                 }
@@ -158,7 +158,7 @@ class swift_couchdbTests: XCTestCase {
                         case .Success(let success):
                             XCTAssert(success.ok!)
                         }
-                        self.couchdb.delete(name) { _ in
+                        self.couchdb.deleteDatabase(name) { _ in
                             expectation.fulfill()
                         }
                     }
@@ -191,7 +191,7 @@ class swift_couchdbTests: XCTestCase {
                             case .Success(let success):
                                 XCTAssert(success.ok!)
                             }
-                            self.couchdb.delete(name) { _ in
+                            self.couchdb.deleteDatabase(name) { _ in
                                 expectation.fulfill()
                             }
                         }
@@ -225,7 +225,7 @@ class swift_couchdbTests: XCTestCase {
                         XCTAssertNotNil(datum.id)
                     }
                 }
-                self.couchdb.delete(name) { _ in
+                self.couchdb.deleteDatabase(name) { _ in
                     expectation.fulfill()
                 }
             }
@@ -256,7 +256,7 @@ class swift_couchdbTests: XCTestCase {
                 case .Success(let success):
                     XCTAssert(success.ok!)
                 }
-                self.couchdb.delete(name) { _ in
+                self.couchdb.deleteDatabase(name) { _ in
                     expectation.fulfill()
                 }
             }
@@ -306,7 +306,7 @@ class swift_couchdbTests: XCTestCase {
                             XCTAssertEqual(response.rows.count, 3)
                             XCTAssertEqual(response.rows[0].key, "munich")
                         }
-                        self.couchdb.delete(name) { _ in
+                        self.couchdb.deleteDatabase(name) { _ in
                             expectation.fulfill()
                         }
                     }
@@ -463,25 +463,59 @@ class swift_couchdbTests: XCTestCase {
     
     
     
-//    func testLogout() {
-//        let expectation = expectationWithDescription("logout")
-//        
-//        // create user
-//        var nitika = CouchDB.User(name: "nitika", password: "pwd", roles: ["dog"])
-//        couchdb.createUser(nitika) { _ in
-//            
-//            // login
-//            self.couchdb.login("nitika", password: "pwd") { _ in
-//                
-//                // logout
-//                
-//                
-//            }
-//            
-//        }
-//        
-//        waitForExpectationsWithTimeout(timeout, handler: nil)
-//    }
+    func testLogout() {
+        let expectation = expectationWithDescription("logout")
+        
+        // create user
+        var nitika = CouchDB.User(name: "nitika", password: "pwd", roles: ["dog"])
+        couchdb.createUser(nitika) { _ in
+            
+            // login
+            self.couchdb.login("nitika", password: "pwd") { _ in
+                
+                // make sure user has session
+                self.couchdb.getSession() { session in
+                    switch session {
+                    case .Error(let error):
+                        XCTAssertNil(error)
+                    case .Success(let success):
+                        XCTAssert(success.ok!)
+                    }
+                    
+                    // logout
+                    self.couchdb.logout() { response in
+                        switch response {
+                        case .Error(let error):
+                            XCTAssertNil(error)
+                        case .Success(let res):
+                            XCTAssert(res.ok!)
+                        }
+                        
+                        // delete user
+                        var database = self.couchdb.use("_users")
+                        database.get("org.couchdb.user:nitika") { response in
+                            switch response {
+                            case .Error(let error):
+                                XCTAssertNil(error)
+                            case .Success(let json):
+                                var doc = Document(data: json)
+                                
+                                database.delete(doc) { _ in
+                                    expectation.fulfill()
+                                }
+                            }
+                        }
+                        
+                    }
+                }
+                
+                
+            }
+            
+        }
+        
+        waitForExpectationsWithTimeout(timeout, handler: nil)
+    }
     
     
     

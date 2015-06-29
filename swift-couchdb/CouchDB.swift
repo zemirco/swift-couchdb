@@ -30,7 +30,7 @@ public class CouchDB {
     *
     * http://docs.couchdb.org/en/latest/api/server/authn.html#post--_session
     */
-    public struct POSTHTTPSessionResponse {
+    public struct HTTPPostSessionResponse {
         public var ok: Bool!
         public var name: String!
         public var roles: [String]!
@@ -50,7 +50,7 @@ public class CouchDB {
     }
     
     public enum LoginResponse {
-        case Success(POSTHTTPSessionResponse)
+        case Success(HTTPPostSessionResponse)
         case Error(NSError)
     }
     
@@ -70,7 +70,7 @@ public class CouchDB {
                     ])))
                     return
                 }
-                done(.Success(POSTHTTPSessionResponse(data: json)))
+                done(.Success(HTTPPostSessionResponse(data: json)))
             }
         }
     }
@@ -100,7 +100,7 @@ public class CouchDB {
         }
     }
     
-    public struct GetSessionHTTPResponseInfo {
+    public struct HTTPGetSessionResponseInfo {
         public var authenticated: String!
         public var authentication_db: String!
         public var authentication_handlers: [String]!
@@ -120,8 +120,8 @@ public class CouchDB {
         }
     }
     
-    public struct GetSessionHTTPResponse {
-        public var info: GetSessionHTTPResponseInfo!
+    public struct HTTPGetSessionResponse {
+        public var info: HTTPGetSessionResponseInfo!
         public var ok: Bool!
         public var userCtx: UserContext!
         
@@ -131,7 +131,7 @@ public class CouchDB {
                     info = d["info"] as? [String: AnyObject],
                     ok = d["ok"] as? Bool,
                     userCtx = d["userCtx"] as? [String: AnyObject] {
-                        self.info = GetSessionHTTPResponseInfo(data: info)
+                        self.info = HTTPGetSessionResponseInfo(data: info)
                         self.ok = ok
                         self.userCtx = UserContext(data: userCtx)
                 }
@@ -140,7 +140,7 @@ public class CouchDB {
     }
     
     public enum GetSessionResponse {
-        case Success(GetSessionHTTPResponse)
+        case Success(HTTPGetSessionResponse)
         case Error(NSError)
     }
     
@@ -156,7 +156,7 @@ public class CouchDB {
                     ])))
                     return
                 }
-                done(.Success(GetSessionHTTPResponse(data: json)))
+                done(.Success(HTTPGetSessionResponse(data: json)))
             }
         }
     }
@@ -168,7 +168,7 @@ public class CouchDB {
      *
      * http://docs.couchdb.org/en/latest/api/server/authn.html#delete--_session
      */
-    public struct DeleteHTTPSessionResponse {
+    public struct HTTPDeleteSessionResponse {
         public var ok: Bool!
         
         public init(data: AnyObject) {
@@ -181,12 +181,25 @@ public class CouchDB {
     }
     
     public enum LogoutResponse {
-        case Success(DeleteHTTPSessionResponse)
+        case Success(HTTPDeleteSessionResponse)
         case Error(NSError)
     }
     
     public func logout(done: (LogoutResponse) -> Void) {
-        
+        HTTP.delete("\(self.url)_session") { response in
+            switch response {
+            case .Error(let error):
+                done(.Error(error))
+            case .Success(let json, let res):
+                if res.statusCode != 200 {
+                    done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
+                        NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
+                    ])))
+                    return
+                }
+                done(.Success(HTTPDeleteSessionResponse(data: json)))
+            }
+        }
     }
     
     
@@ -197,7 +210,7 @@ public class CouchDB {
      * http://docs.couchdb.org/en/latest/api/database/common.html#put--db
      */
     
-    public struct PUTCreateSuccess {
+    public struct HTTPPutCreateSuccess {
         public var ok: Bool!
         
         public init(data: AnyObject) {
@@ -210,12 +223,12 @@ public class CouchDB {
         }
     }
     
-    public enum CreateResponse {
-        case Success(PUTCreateSuccess)
+    public enum CreateDatabaseResponse {
+        case Success(HTTPPutCreateSuccess)
         case Error(NSError)
     }
     
-    public func createDatabase(database: String, done: (CreateResponse) -> Void) {
+    public func createDatabase(database: String, done: (CreateDatabaseResponse) -> Void) {
         HTTP.put("\(self.url)\(database)") { response in
             switch response {
             case .Error(let error):
@@ -227,7 +240,7 @@ public class CouchDB {
                     ])))
                     return
                 }
-                done(.Success(PUTCreateSuccess(data: json)))
+                done(.Success(HTTPPutCreateSuccess(data: json)))
             }
         }
     }
@@ -240,7 +253,7 @@ public class CouchDB {
      * http://docs.couchdb.org/en/latest/api/database/common.html#delete--db
      */
     
-    public struct DELETEResponse {
+    public struct HTTPDeleteResponse {
         public var ok: Bool!
         
         public init(data: AnyObject) {
@@ -252,12 +265,12 @@ public class CouchDB {
         }
     }
     
-    public enum DELReponse {
-        case Success(DELETEResponse)
+    public enum DeleteDatabaseReponse {
+        case Success(HTTPDeleteResponse)
         case Error(NSError)
     }
     
-    public func delete(database: String, done: (DELReponse) -> Void) {
+    public func deleteDatabase(database: String, done: (DeleteDatabaseReponse) -> Void) {
         HTTP.delete("\(self.url)\(database)") { response in
             switch response {
             case .Error(let error):
@@ -267,7 +280,7 @@ public class CouchDB {
                     done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [:])))
                     return
                 }
-                done(DELReponse.Success(DELETEResponse(data: json)))
+                done(.Success(HTTPDeleteResponse(data: json)))
             }
             
         }
@@ -309,7 +322,7 @@ public class CouchDB {
     /**
      * Create user in db
      */
-    public func createUser(user: User, done: (Database.POSTResponse) -> Void) {
+    public func createUser(user: User, done: (Database.PostResponse) -> Void) {
         var data = user.serialize()
         HTTP.put("\(self.url)_users/org.couchdb.user:\(user.name)", data: data) { response in
             switch response {
@@ -322,7 +335,7 @@ public class CouchDB {
                     ])))
                     return
                 }
-                done(.Success(Database.POSTDatabaseReponse(data: json)))
+                done(.Success(Database.HTTPPostDatabaseReponse(data: json)))
             }
         }
     }
@@ -472,7 +485,7 @@ public class Database {
      *
      * http://docs.couchdb.org/en/latest/api/database/common.html#post--db
      */
-    public struct POSTDatabaseReponse {
+    public struct HTTPPostDatabaseReponse {
         public var id: String!
         public var ok: Bool!
         public var rev: String!
@@ -491,12 +504,12 @@ public class Database {
         }
     }
     
-    public enum POSTResponse {
-        case Success(POSTDatabaseReponse)
+    public enum PostResponse {
+        case Success(HTTPPostDatabaseReponse)
         case Error(NSError)
     }
     
-    public func post(document: Document, done: (POSTResponse) -> Void) {
+    public func post(document: Document, done: (PostResponse) -> Void) {
         HTTP.post(self.url, data: document.serialize()) { response in
             switch response {
             case .Error(let error):
@@ -506,7 +519,7 @@ public class Database {
                     done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [:])))
                     return
                 }
-                done(.Success(POSTDatabaseReponse(data: json)))
+                done(.Success(HTTPPostDatabaseReponse(data: json)))
             }
         }
     }
@@ -516,7 +529,7 @@ public class Database {
      *
      * http://docs.couchdb.org/en/latest/api/document/common.html#put--db-docid
      */
-    public func put(document: Document, done: (POSTResponse) -> Void) {
+    public func put(document: Document, done: (PostResponse) -> Void) {
         HTTP.put("\(self.url)\(document._id!)", data: document.serialize()) { response in
             switch response {
             case .Error(let error):
@@ -528,7 +541,7 @@ public class Database {
                     ])))
                     return
                 }
-                done(.Success(POSTDatabaseReponse(data: json)))
+                done(.Success(HTTPPostDatabaseReponse(data: json)))
             }
         }
     }
@@ -538,7 +551,7 @@ public class Database {
      *
      * http://docs.couchdb.org/en/latest/api/document/common.html#delete--db-docid
      */
-    public func delete(document: Document, done: (POSTResponse) -> Void) {
+    public func delete(document: Document, done: (PostResponse) -> Void) {
         HTTP.delete("\(self.url)\(document._id!)?rev=\(document._rev!)") { response in
             switch response {
             case .Error(let error):
@@ -550,7 +563,7 @@ public class Database {
                     ])))
                     return
                 }
-                done(.Success(POSTDatabaseReponse(data: json)))
+                done(.Success(HTTPPostDatabaseReponse(data: json)))
             }
         }
     }
@@ -560,25 +573,25 @@ public class Database {
      *
      * http://docs.couchdb.org/en/latest/api/document/common.html#get--db-docid
      */
-    public enum GETResponse {
+    public enum GetResponse {
         case Success(AnyObject)
         case Error(NSError)
     }
     
     
-    public func get(id: String, done: (GETResponse) -> Void) {
+    public func get(id: String, done: (GetResponse) -> Void) {
         HTTP.get("\(self.url)\(id)") { response in
             switch response {
             case .Error(let error):
-                done(GETResponse.Error(error))
+                done(.Error(error))
             case .Success(let json, let res):
                 if res.statusCode != 200 {
-                    done(GETResponse.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
+                    done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
                         NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
                     ])))
                     return
                 }
-                done(GETResponse.Success(json))
+                done(.Success(json))
             }
         }
     }
@@ -588,7 +601,7 @@ public class Database {
      * 
      * http://docs.couchdb.org/en/latest/api/database/bulk-api.html
      */
-    public struct BulkHTTPResponse {
+    public struct HTTPBulkResponse {
         public var id: String!
         public var rev: String!
         public var error: String?
@@ -614,7 +627,7 @@ public class Database {
     }
     
     public enum BulkResponse {
-        case Success([BulkHTTPResponse])
+        case Success([HTTPBulkResponse])
         case Error(NSError)
     }
     
@@ -635,7 +648,7 @@ public class Database {
                     return
                 }
                 if let data = json as? [AnyObject] {
-                    var arr = data.map() { BulkHTTPResponse(data: $0) }
+                    var arr = data.map() { HTTPBulkResponse(data: $0) }
                     done(.Success(arr))
                 }
             }
