@@ -10,14 +10,68 @@ private let DOMAIN = "CouchDB"
 public class CouchDB {
     
     private var url: String
-    private var name: String?
-    private var password: String?
+    private var headers: [String: String]?
     
     public init(url: String, name: String?, password: String?) {
         self.url = url.hasSuffix("/") ? url : "\(url)/"
-        self.name = name
-        self.password = password
+        if let name = name, password = password {
+            var auth = "\(name):\(password)"
+            var data = auth.dataUsingEncoding(NSUTF8StringEncoding)
+            var base = data!.base64EncodedStringWithOptions(nil)
+            self.headers = [
+                "Authorization": "Basic \(base)"
+            ]
+        }
     }
+    
+    /**
+     * Info
+     *
+     * http://docs.couchdb.org/en/1.6.1/api/server/common.html#get--
+     */
+    public struct HTTPInfoResponse {
+        public var couchdb: String!
+        public var uuid: String!
+        public var version: String!
+        
+        public init(data: AnyObject) {
+            if let d = data as? [String: AnyObject] {
+                if let
+                    couchdb = d["couchdb"] as? String,
+                    uuid = d["uuid"] as? String,
+                    version = d["version"] as? String {
+                        self.couchdb = couchdb
+                        self.uuid = uuid
+                        self.version = version
+                }
+            }
+        }
+    }
+    
+    public enum InfoResponse {
+        case Success(HTTPInfoResponse)
+        case Error(NSError)
+    }
+    
+    public func info(done: (InfoResponse) -> Void) {
+        
+        HTTP.get(self.url, headers: self.headers) { response in
+            switch response {
+            case .Error(let error):
+                done(.Error(error))
+            case .Success(let json, let res):
+                if res.statusCode != 200 {
+                    done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
+                        NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
+                        ])))
+                    return
+                }
+                done(.Success(HTTPInfoResponse(data: json)))
+            }
+        }
+    }
+    
+    
     
     /**
      * Login
@@ -59,7 +113,7 @@ public class CouchDB {
             "name": name,
             "password": password
         ]
-        HTTP.post("\(self.url)_session", data: data) { result in
+        HTTP.post("\(self.url)_session", headers: self.headers, data: data) { result in
             switch result {
             case .Error(let error):
                 done(.Error(error))
