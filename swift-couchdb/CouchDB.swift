@@ -400,7 +400,7 @@ public class CouchDB {
      * Use database
      */
     public func use(name: String) -> Database {
-        return Database(url: "\(self.url)\(name)")
+        return Database(url: "\(self.url)\(name)", headers: self.headers)
     }
     
     
@@ -525,9 +525,11 @@ public class CouchDB {
     public class Database {
         
         private var url: String
+        private var headers: [String: String]?
         
-        public init(url: String) {
+        public init(url: String, headers: [String: String]?) {
             self.url = url.hasSuffix("/") ? url : "\(url)/"
+            self.headers = headers
         }
         
         
@@ -718,7 +720,7 @@ public class CouchDB {
          * Use certain view (design document)
          */
         public func view(name: String) -> View {
-            return View(url: "\(self.url)_design/\(name)/")
+            return View(url: "\(self.url)_design/\(name)/", headers: self.headers)
         }
         
     }
@@ -778,9 +780,11 @@ public class CouchDB {
         }
         
         private var url: String
+        private var headers: [String: String]?
         
-        public init(url: String) {
+        public init(url: String, headers: [String: String]?) {
             self.url = url.hasSuffix("/") ? url : "\(url)/"
+            self.headers = headers
         }
         
         public enum Response {
@@ -790,7 +794,7 @@ public class CouchDB {
         
         public func get(name: String, query: QueryParameters, done: (Response) -> Void) {
             var params = query.encode().stringByAddingPercentEncodingWithAllowedCharacters(.URLQueryAllowedCharacterSet())!
-            HTTP.get("\(self.url)_view/\(name)?\(params)") { response in
+            HTTP.get("\(self.url)_view/\(name)?\(params)", headers: self.headers) { response in
                 switch response {
                 case .Error(let error):
                     done(.Error(error))
