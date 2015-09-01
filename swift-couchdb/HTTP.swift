@@ -116,34 +116,35 @@ public class HTTP {
      * Methods
      */
     public func send(data: AnyObject) -> HTTP {
-        var error: NSError?
-        self.request.HTTPBody = NSJSONSerialization.dataWithJSONObject(data, options: nil, error: &error)
+        do {
+            self.request.HTTPBody = try NSJSONSerialization.dataWithJSONObject(data, options: [])
+        } catch {
+            self.request.HTTPBody = nil
+        }
         self.request.addValue("application/json", forHTTPHeaderField: "Accept")
         self.request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         return self
     }
     
     public func end(done: Response) -> HTTP {
-        var session = NSURLSession.sharedSession()
+        let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(self.request) { data, response, error in
             
             // we have an error -> maybe connection lost
-            if error != .None {
+            if let error = error {
                 done(Result.Error(error))
                 return
             }
             
             // request was success
-            var error: NSError?
             var json: AnyObject!
-            if data != .None {
-                json = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: &error)
-            }
-            
-            // handle json serialization error
-            if error != .None {
-                done(Result.Error(error!))
-                return
+            if let data = data {
+                do {
+                    json = try NSJSONSerialization.JSONObjectWithData(data, options: [])
+                } catch let error as NSError {
+                    done(Result.Error(error))
+                    return
+                }
             }
             
             // looking good

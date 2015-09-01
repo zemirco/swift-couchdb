@@ -5,37 +5,8 @@ import swift_couchdb
 
 class swift_couchdbTests: XCTestCase {
     
-    
-    
     private let timeout: NSTimeInterval = 1
     private var couchdb = CouchDB(url: "http://localhost:5984", name: nil, password: nil)
-    
-    
-    
-    class MyDocument: CouchDB.Document {
-        
-        var city: String!
-        
-        init(city: String, _id: String?, _rev: String?) {
-            self.city = city
-            super.init(_id: _id, _rev: _rev)
-        }
-        
-        override init(data: AnyObject) {
-            if let city = data["city"] as? String {
-                self.city = city
-            }
-            super.init(data: data)
-        }
-        
-        override func serialize() -> [String: AnyObject] {
-            self.dictionary["city"] = self.city
-            return super.serialize()
-        }
-        
-    }
-    
-    
     
     override func setUp() {
         super.setUp()
@@ -51,7 +22,7 @@ class swift_couchdbTests: XCTestCase {
     
     func testCreateDatabase() {
         let expectation = expectationWithDescription("create database")
-        var name = "test-create-database"
+        let name = "test-create-database"
         couchdb.createDatabase(name) { response in
             switch response {
             case .Error(let error):
@@ -71,7 +42,7 @@ class swift_couchdbTests: XCTestCase {
     
     func testDeleteDatabase() {
         let expectation = expectationWithDescription("delete database")
-        var name = "test-delete-database"
+        let name = "test-delete-database"
         couchdb.createDatabase(name) { _ in
             self.couchdb.deleteDatabase(name) { response in
                 switch response {
@@ -90,10 +61,10 @@ class swift_couchdbTests: XCTestCase {
     
     func testCreateDocument() {
         let expectation = expectationWithDescription("create document")
-        var name = "test-create-document"
+        let name = "test-create-document"
         couchdb.createDatabase(name) { _ in
-            var database = self.couchdb.use(name)
-            var doc = MyDocument(city: "darmstadt", _id: "home", _rev: nil)
+            let database = self.couchdb.use(name)
+            let doc = MyDocument(city: "darmstadt", _id: "home", _rev: nil)
             database.post(doc) { response in
                 switch response {
                 case .Error(let error):
@@ -113,17 +84,17 @@ class swift_couchdbTests: XCTestCase {
     
     func testGetDocument() {
         let expectation = expectationWithDescription("get document")
-        var name = "test-get-document"
+        let name = "test-get-document"
         couchdb.createDatabase(name) { _ in
-            var database = self.couchdb.use(name)
-            var doc = MyDocument(city: "darmstadt", _id: "home", _rev: nil)
+            let database = self.couchdb.use(name)
+            let doc = MyDocument(city: "darmstadt", _id: "home", _rev: nil)
             database.post(doc) { _ in
                 database.get("home") { response in
                     switch response {
                     case .Error(let error):
                         XCTAssertNil(error)
                     case .Success(let data):
-                        var doc = MyDocument(data: data)
+                        let doc = MyDocument(data: data)
                         XCTAssertEqual(doc.city, "darmstadt")
                     }
                     self.couchdb.deleteDatabase(name) { _ in
@@ -140,10 +111,10 @@ class swift_couchdbTests: XCTestCase {
     
     func testDeleteDocument() {
         let expectation = expectationWithDescription("delete document")
-        var name = "test-delete-document"
+        let name = "test-delete-document"
         couchdb.createDatabase(name) { _ in
-            var database = self.couchdb.use(name)
-            var doc = MyDocument(city: "darmstadt", _id: nil, _rev: nil)
+            let database = self.couchdb.use(name)
+            let doc = MyDocument(city: "darmstadt", _id: nil, _rev: nil)
             database.post(doc) { res in
                 switch res {
                 case .Error(let error):
@@ -172,17 +143,17 @@ class swift_couchdbTests: XCTestCase {
     
     func testEditDocument() {
         let expectation = expectationWithDescription("edit document")
-        var name = "test-edit-document"
+        let name = "test-edit-document"
         couchdb.createDatabase(name) { _ in
-            var database = self.couchdb.use(name)
-            var doc = MyDocument(city: "darmstadt", _id: "edit", _rev: nil)
+            let database = self.couchdb.use(name)
+            let doc = MyDocument(city: "darmstadt", _id: "edit", _rev: nil)
             database.post(doc) { _ in
                 database.get("edit") { response in
                     switch response {
                     case .Error(let error):
                         XCTAssertNil(error)
                     case .Success(let success):
-                        var docWithRev = MyDocument(data: success)
+                        let docWithRev = MyDocument(data: success)
                         docWithRev.city = "frankfurt"
                         database.put(docWithRev) { res in
                             switch res {
@@ -205,17 +176,17 @@ class swift_couchdbTests: XCTestCase {
     
     
     func testCreateBulkDocuments() {
-        var berlin = MyDocument(city: "berlin", _id: nil, _rev: nil)
-        var frankfurt = MyDocument(city: "frankfurt", _id: nil, _rev: nil)
-        var munich = MyDocument(city: "munich", _id: nil, _rev: nil)
-        var duesseldorf = MyDocument(city: "duesseldorf", _id: nil, _rev: nil)
-        var darmstadt = MyDocument(city: "darmstadt", _id: nil, _rev: nil)
+        let berlin = MyDocument(city: "berlin", _id: nil, _rev: nil)
+        let frankfurt = MyDocument(city: "frankfurt", _id: nil, _rev: nil)
+        let munich = MyDocument(city: "munich", _id: nil, _rev: nil)
+        let duesseldorf = MyDocument(city: "duesseldorf", _id: nil, _rev: nil)
+        let darmstadt = MyDocument(city: "darmstadt", _id: nil, _rev: nil)
         
         let expectation = expectationWithDescription("bulk documents")
-        var name = "bulk-documents"
+        let name = "bulk-documents"
         
         couchdb.createDatabase(name) { _ in
-            var database = self.couchdb.use(name)
+            let database = self.couchdb.use(name)
             database.bulk([berlin, frankfurt, munich, duesseldorf, darmstadt]) { response in
                 switch response {
                 case .Error(let error):
@@ -237,18 +208,18 @@ class swift_couchdbTests: XCTestCase {
     
     func testCreateDesignDocument() {
         let expectation = expectationWithDescription("create design document")
-        var name = "create-design-document"
+        let name = "create-design-document"
         
         // create design document
-        var map = "function(doc) { if (doc.city) { emit(doc.city) } }"
-        var view = CouchDB.DesignDocumentView(map: map, reduce: nil)
-        var designDocument = CouchDB.DesignDocument(_id: "cities", _rev: nil, views: [
+        let map = "function(doc) { if (doc.city) { emit(doc.city) } }"
+        let view = CouchDB.DesignDocumentView(map: map, reduce: nil)
+        let designDocument = CouchDB.DesignDocument(_id: "cities", _rev: nil, views: [
                 "byName": view
         ])
         
         // add document to db
         couchdb.createDatabase(name) { _ in
-            var database = self.couchdb.use(name)
+            let database = self.couchdb.use(name)
             database.put(designDocument) { response in
                 switch response {
                 case .Error(let error):
@@ -270,32 +241,32 @@ class swift_couchdbTests: XCTestCase {
     
     func testQueryView() {
         let expectation = expectationWithDescription("query view")
-        var name = "test-query-view"
+        let name = "test-query-view"
         
         // create design document
-        var map = "function(doc) { if (doc.city) { emit(doc.city) } }"
-        var view = CouchDB.DesignDocumentView(map: map, reduce: nil)
-        var designDocument = CouchDB.DesignDocument(_id: "cities", _rev: nil, views: [
+        let map = "function(doc) { if (doc.city) { emit(doc.city) } }"
+        let view = CouchDB.DesignDocumentView(map: map, reduce: nil)
+        let designDocument = CouchDB.DesignDocument(_id: "cities", _rev: nil, views: [
             "byName": view
         ])
         
         // add design document to db
         couchdb.createDatabase(name) { _ in
-            var database = self.couchdb.use(name)
+            let database = self.couchdb.use(name)
             database.put(designDocument) { _ in
                 
                 // add some dummy documents
-                var berlin = MyDocument(city: "berlin", _id: nil, _rev: nil)
-                var frankfurt = MyDocument(city: "frankfurt", _id: nil, _rev: nil)
-                var munich = MyDocument(city: "munich", _id: nil, _rev: nil)
-                var duesseldorf = MyDocument(city: "duesseldorf", _id: nil, _rev: nil)
-                var darmstadt = MyDocument(city: "darmstadt", _id: nil, _rev: nil)
+                let berlin = MyDocument(city: "berlin", _id: nil, _rev: nil)
+                let frankfurt = MyDocument(city: "frankfurt", _id: nil, _rev: nil)
+                let munich = MyDocument(city: "munich", _id: nil, _rev: nil)
+                let duesseldorf = MyDocument(city: "duesseldorf", _id: nil, _rev: nil)
+                let darmstadt = MyDocument(city: "darmstadt", _id: nil, _rev: nil)
                 
                 database.bulk([berlin, frankfurt, munich, duesseldorf, darmstadt]) { _ in
                     
                     // query view
-                    var view = database.view("cities")
-                    var params = CouchDB.QueryParameters()
+                    let view = database.view("cities")
+                    let params = CouchDB.QueryParameters()
                     params.limit = 3
                     params.descending = true
                     view.get("byName", query: params) { response in
@@ -324,7 +295,7 @@ class swift_couchdbTests: XCTestCase {
     func testCreateUser() {
         let expectation = expectationWithDescription("create user")
         
-        var john = CouchDB.User(name: "john", password: "secret", roles: ["awesome"])
+        let john = CouchDB.User(name: "john", password: "secret", roles: ["awesome"])
         couchdb.createUser(john) { response in
             switch response {
             case .Error(let error):
@@ -344,17 +315,17 @@ class swift_couchdbTests: XCTestCase {
         let expectation = expectationWithDescription("delete user")
         
         // create user
-        var john = CouchDB.User(name: "john", password: "secret", roles: ["awesome"])
+        let john = CouchDB.User(name: "john", password: "secret", roles: ["awesome"])
         couchdb.createUser(john) { _ in
             
             // delete user
-            var database = self.couchdb.use("_users")
+            let database = self.couchdb.use("_users")
             database.get("org.couchdb.user:john") { response in
                 switch response {
                 case .Error(let error):
                     XCTAssertNil(error)
                 case .Success(let json):
-                    var doc = CouchDB.Document(data: json)
+                    let doc = CouchDB.Document(data: json)
                     
                     database.delete(doc) { res in
                         switch res {
@@ -380,7 +351,7 @@ class swift_couchdbTests: XCTestCase {
         let expectation = expectationWithDescription("login")
         
         // create user first
-        var steve = CouchDB.User(name: "steve", password: "password", roles: ["awesome"])
+        let steve = CouchDB.User(name: "steve", password: "password", roles: ["awesome"])
         couchdb.createUser(steve) { _ in
             
             // test login
@@ -393,13 +364,13 @@ class swift_couchdbTests: XCTestCase {
                 }
                 
                 // delete user
-                var database = self.couchdb.use("_users")
+                let database = self.couchdb.use("_users")
                 database.get("org.couchdb.user:steve") { response in
                     switch response {
                     case .Error(let error):
                         XCTAssertNil(error)
                     case .Success(let json):
-                        var doc = CouchDB.Document(data: json)
+                        let doc = CouchDB.Document(data: json)
                         
                         database.delete(doc) { _ in
                             expectation.fulfill()
@@ -419,7 +390,7 @@ class swift_couchdbTests: XCTestCase {
         let expectation = expectationWithDescription("get session")
         
         // create user
-        var wiff = CouchDB.User(name: "wiff", password: "pwd", roles: ["dog"])
+        let wiff = CouchDB.User(name: "wiff", password: "pwd", roles: ["dog"])
         couchdb.createUser(wiff) { _ in
             
             // login
@@ -438,13 +409,13 @@ class swift_couchdbTests: XCTestCase {
                     }
                     
                     // delete user
-                    var database = self.couchdb.use("_users")
+                    let database = self.couchdb.use("_users")
                     database.get("org.couchdb.user:wiff") { response in
                         switch response {
                         case .Error(let error):
                             XCTAssertNil(error)
                         case .Success(let json):
-                            var doc = CouchDB.Document(data: json)
+                            let doc = CouchDB.Document(data: json)
                             
                             database.delete(doc) { _ in
                                 expectation.fulfill()
@@ -467,7 +438,7 @@ class swift_couchdbTests: XCTestCase {
         let expectation = expectationWithDescription("logout")
         
         // create user
-        var nitika = CouchDB.User(name: "nitika", password: "pwd", roles: ["dog"])
+        let nitika = CouchDB.User(name: "nitika", password: "pwd", roles: ["dog"])
         couchdb.createUser(nitika) { _ in
             
             // login
@@ -492,13 +463,13 @@ class swift_couchdbTests: XCTestCase {
                         }
                         
                         // delete user
-                        var database = self.couchdb.use("_users")
+                        let database = self.couchdb.use("_users")
                         database.get("org.couchdb.user:nitika") { response in
                             switch response {
                             case .Error(let error):
                                 XCTAssertNil(error)
                             case .Success(let json):
-                                var doc = CouchDB.Document(data: json)
+                                let doc = CouchDB.Document(data: json)
                                 
                                 database.delete(doc) { _ in
                                     expectation.fulfill()

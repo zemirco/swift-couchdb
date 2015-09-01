@@ -15,9 +15,9 @@ public class CouchDB {
     public init(url: String, name: String?, password: String?) {
         self.url = url.hasSuffix("/") ? url : "\(url)/"
         if let name = name, password = password {
-            var auth = "\(name):\(password)"
-            var data = auth.dataUsingEncoding(NSUTF8StringEncoding)
-            var base = data!.base64EncodedStringWithOptions(nil)
+            let auth = "\(name):\(password)"
+            let data = auth.dataUsingEncoding(NSUTF8StringEncoding)
+            let base = data!.base64EncodedStringWithOptions([])
             self.headers = [
                 "Authorization": "Basic \(base)"
             ]
@@ -109,7 +109,7 @@ public class CouchDB {
     }
     
     public func login(name: String, password: String, done: (LoginResponse) -> Void) {
-        var data = [
+        let data = [
             "name": name,
             "password": password
         ]
@@ -377,7 +377,7 @@ public class CouchDB {
      * Create user in db
      */
     public func createUser(user: User, done: (Database.PostResponse) -> Void) {
-        var data = user.serialize()
+        let data = user.serialize()
         HTTP.put("\(self.url)_users/org.couchdb.user:\(user.name)", data: data) { response in
             switch response {
             case .Error(let error):
@@ -691,8 +691,8 @@ public class CouchDB {
         }
         
         public func bulk(documents: [Document], done: (BulkResponse) -> Void) {
-            var docs = documents.map() { $0.serialize() }
-            var data = [
+            let docs = documents.map() { $0.serialize() }
+            let data = [
                 "docs": docs
             ]
             HTTP.post("\(self.url)_bulk_docs", data: data) { response in
@@ -707,7 +707,7 @@ public class CouchDB {
                         return
                     }
                     if let data = json as? [AnyObject] {
-                        var arr = data.map() { HTTPBulkResponse(data: $0) }
+                        let arr = data.map() { HTTPBulkResponse(data: $0) }
                         done(.Success(arr))
                     }
                 }
@@ -764,7 +764,7 @@ public class CouchDB {
         public struct Row {
             public var id: String!
             public var key: String!
-            //        public var value: String!
+            public var value: String!
             
             public init(data: AnyObject) {
                 if let dict = data as? [String: AnyObject] {
@@ -774,6 +774,7 @@ public class CouchDB {
                             self.id = id
                             self.key = key
                             //                        self.value = value
+                            // add doc
                     }
                 }
             }
@@ -793,7 +794,7 @@ public class CouchDB {
         }
         
         public func get(name: String, query: QueryParameters, done: (Response) -> Void) {
-            var params = query.encode().stringByAddingPercentEncodingWithAllowedCharacters(.URLQueryAllowedCharacterSet())!
+            let params = query.encode().stringByAddingPercentEncodingWithAllowedCharacters(.URLQueryAllowedCharacterSet())!
             HTTP.get("\(self.url)_view/\(name)?\(params)", headers: self.headers) { response in
                 switch response {
                 case .Error(let error):
