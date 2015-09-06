@@ -16,7 +16,7 @@
 		3B068B021B34A21E00F27CBF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B068B011B34A21E00F27CBF /* Images.xcassets */; };
 		3B068B051B34A21E00F27CBF /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B068B031B34A21E00F27CBF /* LaunchScreen.xib */; };
 		3B068B111B34A21E00F27CBF /* swift_couchdbTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B068B101B34A21E00F27CBF /* swift_couchdbTests.swift */; };
-		3B068B1B1B34A23200F27CBF /* CouchDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B068B1A1B34A23200F27CBF /* CouchDB.swift */; };
+		3BE25E321B9C8A70008705F6 /* CouchDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE25E311B9C8A70008705F6 /* CouchDB.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,7 +43,7 @@
 		3B068B0A1B34A21E00F27CBF /* swift-couchdbTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "swift-couchdbTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B068B0F1B34A21E00F27CBF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3B068B101B34A21E00F27CBF /* swift_couchdbTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = swift_couchdbTests.swift; sourceTree = "<group>"; };
-		3B068B1A1B34A23200F27CBF /* CouchDB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CouchDB.swift; sourceTree = "<group>"; };
+		3BE25E311B9C8A70008705F6 /* CouchDB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CouchDB.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,8 +87,8 @@
 			children = (
 				3B068AFA1B34A21E00F27CBF /* AppDelegate.swift */,
 				3B068AFC1B34A21E00F27CBF /* ViewController.swift */,
-				3B068B1A1B34A23200F27CBF /* CouchDB.swift */,
 				3B046B171B9573480090B77C /* MyDocument.swift */,
+				3BE25E311B9C8A70008705F6 /* CouchDB.swift */,
 				3B046B151B94E3C00090B77C /* QueryString.swift */,
 				3B046B131B94E3B10090B77C /* HTTP.swift */,
 				3B068AFE1B34A21E00F27CBF /* Main.storyboard */,
@@ -228,10 +228,10 @@
 			files = (
 				3B068AFD1B34A21E00F27CBF /* ViewController.swift in Sources */,
 				3B046B161B94E3C00090B77C /* QueryString.swift in Sources */,
+				3BE25E321B9C8A70008705F6 /* CouchDB.swift in Sources */,
 				3B046B181B9573480090B77C /* MyDocument.swift in Sources */,
 				3B046B141B94E3B10090B77C /* HTTP.swift in Sources */,
 				3B068AFB1B34A21E00F27CBF /* AppDelegate.swift in Sources */,
-				3B068B1B1B34A23200F27CBF /* CouchDB.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

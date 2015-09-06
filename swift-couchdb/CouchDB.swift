@@ -419,7 +419,7 @@ public class CouchDB {
             self._rev = _rev
         }
         
-        public init(data: AnyObject) {
+        public init(data: [String: AnyObject]) {
             if let
                 _id = data["_id"] as? String,
                 _rev = data["_rev"] as? String {
@@ -764,7 +764,8 @@ public class CouchDB {
         public struct Row {
             public var id: String!
             public var key: String!
-            public var value: String!
+            public var value: AnyObject!
+            public var doc: [String: AnyObject]?
             
             public init(data: AnyObject) {
                 if let dict = data as? [String: AnyObject] {
@@ -773,8 +774,10 @@ public class CouchDB {
                         let key = dict["key"] as? String {
                             self.id = id
                             self.key = key
-                            //                        self.value = value
-                            // add doc
+                            self.value = dict["value"]
+                    }
+                    if let doc = dict["doc"] as? [String: AnyObject] {
+                        self.doc = doc
                     }
                 }
             }
