@@ -94,7 +94,7 @@ class swift_couchdbTests: XCTestCase {
                     case .Error(let error):
                         XCTAssertNil(error)
                     case .Success(let data):
-                        let doc = MyDocument(data: data)
+                        let doc = MyDocument(data: data as! [String : AnyObject])
                         XCTAssertEqual(doc.city, "darmstadt")
                     }
                     self.couchdb.deleteDatabase(name) { _ in
@@ -153,7 +153,7 @@ class swift_couchdbTests: XCTestCase {
                     case .Error(let error):
                         XCTAssertNil(error)
                     case .Success(let success):
-                        let docWithRev = MyDocument(data: success)
+                        let docWithRev = MyDocument(data: success as! [String : AnyObject])
                         docWithRev.city = "frankfurt"
                         database.put(docWithRev) { res in
                             switch res {
@@ -325,7 +325,7 @@ class swift_couchdbTests: XCTestCase {
                 case .Error(let error):
                     XCTAssertNil(error)
                 case .Success(let json):
-                    let doc = CouchDB.Document(data: json)
+                    let doc = CouchDB.Document(data: json as! [String : AnyObject])
                     
                     database.delete(doc) { res in
                         switch res {
@@ -370,7 +370,7 @@ class swift_couchdbTests: XCTestCase {
                     case .Error(let error):
                         XCTAssertNil(error)
                     case .Success(let json):
-                        let doc = CouchDB.Document(data: json)
+                        let doc = CouchDB.Document(data: json as! [String : AnyObject])
                         
                         database.delete(doc) { _ in
                             expectation.fulfill()
@@ -415,7 +415,7 @@ class swift_couchdbTests: XCTestCase {
                         case .Error(let error):
                             XCTAssertNil(error)
                         case .Success(let json):
-                            let doc = CouchDB.Document(data: json)
+                            let doc = CouchDB.Document(data: json as! [String : AnyObject])
                             
                             database.delete(doc) { _ in
                                 expectation.fulfill()
@@ -469,7 +469,7 @@ class swift_couchdbTests: XCTestCase {
                             case .Error(let error):
                                 XCTAssertNil(error)
                             case .Success(let json):
-                                let doc = CouchDB.Document(data: json)
+                                let doc = CouchDB.Document(data: json as! [String : AnyObject])
                                 
                                 database.delete(doc) { _ in
                                     expectation.fulfill()
