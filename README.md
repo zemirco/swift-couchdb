@@ -1,6 +1,8 @@
 
 # swift-couchdb
 
+[![Build Status](https://travis-ci.org/zemirco/swift-couchdb.svg)](https://travis-ci.org/zemirco/swift-couchdb)
+
 CouchDB client for Swift.
 
 ## Installation
