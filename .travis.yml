@@ -1,5 +1,6 @@
 
-services: couchdb
+services:
+  - couchdb
 
 language: objective-c
 
