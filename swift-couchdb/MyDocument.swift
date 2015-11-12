@@ -10,9 +10,9 @@ public class MyDocument: CouchDB.Document {
         super.init(_id: _id, _rev: _rev)
     }
     
-    public override init(data: AnyObject) {
+    public override init(data: [String: AnyObject]) {
         if let city = data["city"] as? String {
-            self.city = city
+                self.city = city
         }
         super.init(data: data)
     }
