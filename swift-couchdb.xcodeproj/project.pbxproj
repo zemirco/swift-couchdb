@@ -7,16 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3B046B141B94E3B10090B77C /* HTTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B046B131B94E3B10090B77C /* HTTP.swift */; settings = {ASSET_TAGS = (); }; };
-		3B046B161B94E3C00090B77C /* QueryString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B046B151B94E3C00090B77C /* QueryString.swift */; settings = {ASSET_TAGS = (); }; };
-		3B046B181B9573480090B77C /* MyDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B046B171B9573480090B77C /* MyDocument.swift */; settings = {ASSET_TAGS = (); }; };
+		3B046B181B9573480090B77C /* MyDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B046B171B9573480090B77C /* MyDocument.swift */; };
 		3B068AFB1B34A21E00F27CBF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B068AFA1B34A21E00F27CBF /* AppDelegate.swift */; };
 		3B068AFD1B34A21E00F27CBF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B068AFC1B34A21E00F27CBF /* ViewController.swift */; };
 		3B068B001B34A21E00F27CBF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3B068AFE1B34A21E00F27CBF /* Main.storyboard */; };
 		3B068B021B34A21E00F27CBF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B068B011B34A21E00F27CBF /* Images.xcassets */; };
 		3B068B051B34A21E00F27CBF /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B068B031B34A21E00F27CBF /* LaunchScreen.xib */; };
 		3B068B111B34A21E00F27CBF /* swift_couchdbTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B068B101B34A21E00F27CBF /* swift_couchdbTests.swift */; };
-		3BE25E321B9C8A70008705F6 /* CouchDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE25E311B9C8A70008705F6 /* CouchDB.swift */; settings = {ASSET_TAGS = (); }; };
+		3B4BF0091DB1F60500F3CBD0 /* QueryString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4BF0081DB1F60500F3CBD0 /* QueryString.swift */; };
+		3B4BF00B1DB1F61300F3CBD0 /* HTTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4BF00A1DB1F61300F3CBD0 /* HTTP.swift */; };
+		3BE25E321B9C8A70008705F6 /* CouchDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE25E311B9C8A70008705F6 /* CouchDB.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -30,8 +30,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		3B046B131B94E3B10090B77C /* HTTP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTP.swift; sourceTree = "<group>"; };
-		3B046B151B94E3C00090B77C /* QueryString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryString.swift; sourceTree = "<group>"; };
 		3B046B171B9573480090B77C /* MyDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyDocument.swift; sourceTree = "<group>"; };
 		3B068AF51B34A21E00F27CBF /* swift-couchdb.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "swift-couchdb.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B068AF91B34A21E00F27CBF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -43,6 +41,8 @@
 		3B068B0A1B34A21E00F27CBF /* swift-couchdbTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "swift-couchdbTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B068B0F1B34A21E00F27CBF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3B068B101B34A21E00F27CBF /* swift_couchdbTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = swift_couchdbTests.swift; sourceTree = "<group>"; };
+		3B4BF0081DB1F60500F3CBD0 /* QueryString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryString.swift; sourceTree = "<group>"; };
+		3B4BF00A1DB1F61300F3CBD0 /* HTTP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTP.swift; sourceTree = "<group>"; };
 		3BE25E311B9C8A70008705F6 /* CouchDB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CouchDB.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -89,8 +89,8 @@
 				3B068AFC1B34A21E00F27CBF /* ViewController.swift */,
 				3B046B171B9573480090B77C /* MyDocument.swift */,
 				3BE25E311B9C8A70008705F6 /* CouchDB.swift */,
-				3B046B151B94E3C00090B77C /* QueryString.swift */,
-				3B046B131B94E3B10090B77C /* HTTP.swift */,
+				3B4BF00A1DB1F61300F3CBD0 /* HTTP.swift */,
+				3B4BF0081DB1F60500F3CBD0 /* QueryString.swift */,
 				3B068AFE1B34A21E00F27CBF /* Main.storyboard */,
 				3B068B011B34A21E00F27CBF /* Images.xcassets */,
 				3B068B031B34A21E00F27CBF /* LaunchScreen.xib */,
@@ -175,9 +175,11 @@
 				TargetAttributes = {
 					3B068AF41B34A21E00F27CBF = {
 						CreatedOnToolsVersion = 6.3.2;
+						LastSwiftMigration = 0800;
 					};
 					3B068B091B34A21E00F27CBF = {
 						CreatedOnToolsVersion = 6.3.2;
+						LastSwiftMigration = 0800;
 						TestTargetID = 3B068AF41B34A21E00F27CBF;
 					};
 				};
@@ -227,10 +229,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				3B068AFD1B34A21E00F27CBF /* ViewController.swift in Sources */,
-				3B046B161B94E3C00090B77C /* QueryString.swift in Sources */,
+				3B4BF0091DB1F60500F3CBD0 /* QueryString.swift in Sources */,
 				3BE25E321B9C8A70008705F6 /* CouchDB.swift in Sources */,
+				3B4BF00B1DB1F61300F3CBD0 /* HTTP.swift in Sources */,
 				3B046B181B9573480090B77C /* MyDocument.swift in Sources */,
-				3B046B141B94E3B10090B77C /* HTTP.swift in Sources */,
 				3B068AFB1B34A21E00F27CBF /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -365,6 +367,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "zemirco.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -376,6 +379,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "zemirco.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -395,6 +399,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "zemirco.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/swift-couchdb.app/swift-couchdb";
 			};
 			name = Debug;
@@ -411,6 +416,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "zemirco.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/swift-couchdb.app/swift-couchdb";
 			};
 			name = Release;

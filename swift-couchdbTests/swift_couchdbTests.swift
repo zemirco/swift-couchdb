@@ -5,8 +5,8 @@ import swift_couchdb
 
 class swift_couchdbTests: XCTestCase {
     
-    private let timeout: NSTimeInterval = 1
-    private var couchdb = CouchDB(url: "http://localhost:5984", name: nil, password: nil)
+    fileprivate let timeout: TimeInterval = 1
+    fileprivate var couchdb = CouchDB(url: "http://localhost:5984", name: nil, password: nil)
     
     override func setUp() {
         super.setUp()
@@ -21,13 +21,13 @@ class swift_couchdbTests: XCTestCase {
     
     
     func testCreateDatabase() {
-        let expectation = expectationWithDescription("create database")
+        let expectation = self.expectation(description: "create database")
         let name = "test-create-database"
         couchdb.createDatabase(name) { response in
             switch response {
-            case .Error(let error):
+            case .error(let error):
                 XCTAssertNil(error)
-            case .Success(let success):
+            case .success(let success):
                 XCTAssert(success.ok!)
             }
             self.couchdb.deleteDatabase(name) { _ in
@@ -35,41 +35,41 @@ class swift_couchdbTests: XCTestCase {
             }
             
         }
-        waitForExpectationsWithTimeout(timeout, handler: nil)
+        waitForExpectations(timeout: timeout, handler: nil)
     }
     
     
     
     func testDeleteDatabase() {
-        let expectation = expectationWithDescription("delete database")
+        let expectation = self.expectation(description: "delete database")
         let name = "test-delete-database"
         couchdb.createDatabase(name) { _ in
             self.couchdb.deleteDatabase(name) { response in
                 switch response {
-                case .Error(let error):
+                case .error(let error):
                     XCTAssertNil(error)
-                case .Success(let success):
+                case .success(let success):
                     XCTAssert(success.ok!)
                 }
                 expectation.fulfill()
             }
         }
-        waitForExpectationsWithTimeout(timeout, handler: nil)
+        waitForExpectations(timeout: timeout, handler: nil)
     }
     
     
     
     func testCreateDocument() {
-        let expectation = expectationWithDescription("create document")
+        let expectation = self.expectation(description: "create document")
         let name = "test-create-document"
         couchdb.createDatabase(name) { _ in
             let database = self.couchdb.use(name)
             let doc = MyDocument(city: "darmstadt", _id: "home", _rev: nil)
             database.post(doc) { response in
                 switch response {
-                case .Error(let error):
+                case .error(let error):
                     XCTAssertNil(error)
-                case .Success(let success):
+                case .success(let success):
                     XCTAssert(success.ok!)
                 }
                 self.couchdb.deleteDatabase(name) { _ in
@@ -77,13 +77,13 @@ class swift_couchdbTests: XCTestCase {
                 }
             }
         }
-        waitForExpectationsWithTimeout(timeout, handler: nil)
+        waitForExpectations(timeout: timeout, handler: nil)
     }
     
     
     
     func testGetDocument() {
-        let expectation = expectationWithDescription("get document")
+        let expectation = self.expectation(description: "get document")
         let name = "test-get-document"
         couchdb.createDatabase(name) { _ in
             let database = self.couchdb.use(name)
@@ -91,9 +91,9 @@ class swift_couchdbTests: XCTestCase {
             database.post(doc) { _ in
                 database.get("home") { response in
                     switch response {
-                    case .Error(let error):
+                    case .error(let error):
                         XCTAssertNil(error)
-                    case .Success(let data):
+                    case .success(let data):
                         let doc = MyDocument(data: data as! [String : AnyObject])
                         XCTAssertEqual(doc.city, "darmstadt")
                     }
@@ -104,29 +104,29 @@ class swift_couchdbTests: XCTestCase {
 
             }
         }
-        waitForExpectationsWithTimeout(timeout, handler: nil)
+        waitForExpectations(timeout: timeout, handler: nil)
     }
     
     
     
     func testDeleteDocument() {
-        let expectation = expectationWithDescription("delete document")
+        let expectation = self.expectation(description: "delete document")
         let name = "test-delete-document"
         couchdb.createDatabase(name) { _ in
             let database = self.couchdb.use(name)
             let doc = MyDocument(city: "darmstadt", _id: nil, _rev: nil)
             database.post(doc) { res in
                 switch res {
-                case .Error(let error):
+                case .error(let error):
                     XCTAssertNil(error)
-                case .Success(let success):
+                case .success(let success):
                     doc._id = success.id
                     doc._rev = success.rev
                     database.delete(doc) { success in
                         switch success {
-                        case .Error(let error):
+                        case .error(let error):
                             XCTAssertNil(error)
-                        case .Success(let success):
+                        case .success(let success):
                             XCTAssert(success.ok!)
                         }
                         self.couchdb.deleteDatabase(name) { _ in
@@ -136,13 +136,13 @@ class swift_couchdbTests: XCTestCase {
                 }
             }
         }
-        waitForExpectationsWithTimeout(timeout, handler: nil)
+        waitForExpectations(timeout: timeout, handler: nil)
     }
     
     
     
     func testEditDocument() {
-        let expectation = expectationWithDescription("edit document")
+        let expectation = self.expectation(description: "edit document")
         let name = "test-edit-document"
         couchdb.createDatabase(name) { _ in
             let database = self.couchdb.use(name)
@@ -150,16 +150,16 @@ class swift_couchdbTests: XCTestCase {
             database.post(doc) { _ in
                 database.get("edit") { response in
                     switch response {
-                    case .Error(let error):
+                    case .error(let error):
                         XCTAssertNil(error)
-                    case .Success(let success):
+                    case .success(let success):
                         let docWithRev = MyDocument(data: success as! [String : AnyObject])
                         docWithRev.city = "frankfurt"
                         database.put(docWithRev) { res in
                             switch res {
-                            case .Error(let error):
+                            case .error(let error):
                                 XCTAssertNil(error)
-                            case .Success(let success):
+                            case .success(let success):
                                 XCTAssert(success.ok!)
                             }
                             self.couchdb.deleteDatabase(name) { _ in
@@ -170,7 +170,7 @@ class swift_couchdbTests: XCTestCase {
                 }
             }
         }
-        waitForExpectationsWithTimeout(timeout, handler: nil)
+        waitForExpectations(timeout: timeout, handler: nil)
     }
     
     
@@ -182,16 +182,16 @@ class swift_couchdbTests: XCTestCase {
         let duesseldorf = MyDocument(city: "duesseldorf", _id: nil, _rev: nil)
         let darmstadt = MyDocument(city: "darmstadt", _id: nil, _rev: nil)
         
-        let expectation = expectationWithDescription("bulk documents")
+        let expectation = self.expectation(description: "bulk documents")
         let name = "bulk-documents"
         
         couchdb.createDatabase(name) { _ in
             let database = self.couchdb.use(name)
             database.bulk([berlin, frankfurt, munich, duesseldorf, darmstadt]) { response in
                 switch response {
-                case .Error(let error):
+                case .error(let error):
                     XCTAssertNil(error)
-                case .Success(let data):
+                case .success(let data):
                     for datum in data {
                         XCTAssertNotNil(datum.id)
                     }
@@ -201,13 +201,13 @@ class swift_couchdbTests: XCTestCase {
                 }
             }
         }
-        waitForExpectationsWithTimeout(timeout, handler: nil)
+        waitForExpectations(timeout: timeout, handler: nil)
     }
     
     
     
     func testCreateDesignDocument() {
-        let expectation = expectationWithDescription("create design document")
+        let expectation = self.expectation(description: "create design document")
         let name = "create-design-document"
         
         // create design document
@@ -222,9 +222,9 @@ class swift_couchdbTests: XCTestCase {
             let database = self.couchdb.use(name)
             database.put(designDocument) { response in
                 switch response {
-                case .Error(let error):
+                case .error(let error):
                     XCTAssertNil(error)
-                case .Success(let success):
+                case .success(let success):
                     XCTAssert(success.ok!)
                 }
                 self.couchdb.deleteDatabase(name) { _ in
@@ -233,14 +233,14 @@ class swift_couchdbTests: XCTestCase {
             }
         }
         
-        waitForExpectationsWithTimeout(timeout, handler: nil)
+        waitForExpectations(timeout: timeout, handler: nil)
         
     }
     
     
     
     func testQueryView() {
-        let expectation = expectationWithDescription("query view")
+        let expectation = self.expectation(description: "query view")
         let name = "test-query-view"
         
         // create design document
@@ -271,9 +271,9 @@ class swift_couchdbTests: XCTestCase {
                     params.descending = true
                     view.get("byName", query: params) { response in
                         switch response {
-                        case .Error(let error):
+                        case .error(let error):
                             XCTAssertNil(error)
-                        case .Success(let response):
+                        case .success(let response):
                             XCTAssertEqual(response.rows.count, 3)
                             XCTAssertEqual(response.rows[0].key, "munich")
                         }
@@ -287,32 +287,32 @@ class swift_couchdbTests: XCTestCase {
             }
         }
         
-        waitForExpectationsWithTimeout(timeout, handler: nil)
+        waitForExpectations(timeout: timeout, handler: nil)
     }
     
     
     
     func testCreateUser() {
-        let expectation = expectationWithDescription("create user")
+        let expectation = self.expectation(description: "create user")
         
         let john = CouchDB.User(name: "john", password: "secret", roles: ["awesome"])
         couchdb.createUser(john) { response in
             switch response {
-            case .Error(let error):
+            case .error(let error):
                 XCTAssertNil(error)
-            case .Success(let res):
+            case .success(let res):
                 XCTAssert(res.ok!)
             }
             expectation.fulfill()
         }
         
-        waitForExpectationsWithTimeout(timeout, handler: nil)
+        waitForExpectations(timeout: timeout, handler: nil)
     }
     
     
     
     func testDeleteUser() {
-        let expectation = expectationWithDescription("delete user")
+        let expectation = self.expectation(description: "delete user")
         
         // create user
         let john = CouchDB.User(name: "john", password: "secret", roles: ["awesome"])
@@ -322,16 +322,16 @@ class swift_couchdbTests: XCTestCase {
             let database = self.couchdb.use("_users")
             database.get("org.couchdb.user:john") { response in
                 switch response {
-                case .Error(let error):
+                case .error(let error):
                     XCTAssertNil(error)
-                case .Success(let json):
+                case .success(let json):
                     let doc = CouchDB.Document(data: json as! [String : AnyObject])
                     
                     database.delete(doc) { res in
                         switch res {
-                        case .Error(let error):
+                        case .error(let error):
                             XCTAssertNil(error)
-                        case .Success(let success):
+                        case .success(let success):
                             XCTAssert(success.ok!)
                         }
                         expectation.fulfill()
@@ -342,13 +342,13 @@ class swift_couchdbTests: XCTestCase {
             
         }
         
-        waitForExpectationsWithTimeout(timeout, handler: nil)
+        waitForExpectations(timeout: timeout, handler: nil)
     }
     
     
     
     func testLogin() {
-        let expectation = expectationWithDescription("login")
+        let expectation = self.expectation(description: "login")
         
         // create user first
         let steve = CouchDB.User(name: "steve", password: "password", roles: ["awesome"])
@@ -357,9 +357,9 @@ class swift_couchdbTests: XCTestCase {
             // test login
             self.couchdb.login("steve", password: "password") { response in
                 switch response {
-                case .Error(let error):
+                case .error(let error):
                     XCTAssertNil(error)
-                case .Success(let success):
+                case .success(let success):
                     XCTAssert(success.ok!)
                 }
                 
@@ -367,9 +367,9 @@ class swift_couchdbTests: XCTestCase {
                 let database = self.couchdb.use("_users")
                 database.get("org.couchdb.user:steve") { response in
                     switch response {
-                    case .Error(let error):
+                    case .error(let error):
                         XCTAssertNil(error)
-                    case .Success(let json):
+                    case .success(let json):
                         let doc = CouchDB.Document(data: json as! [String : AnyObject])
                         
                         database.delete(doc) { _ in
@@ -381,13 +381,13 @@ class swift_couchdbTests: XCTestCase {
             
         }
         
-        waitForExpectationsWithTimeout(timeout, handler: nil)
+        waitForExpectations(timeout: timeout, handler: nil)
     }
     
     
     
     func testGetSession() {
-        let expectation = expectationWithDescription("get session")
+        let expectation = self.expectation(description: "get session")
         
         // create user
         let wiff = CouchDB.User(name: "wiff", password: "pwd", roles: ["dog"])
@@ -400,9 +400,9 @@ class swift_couchdbTests: XCTestCase {
                 self.couchdb.getSession() { response in
                     
                     switch response {
-                    case .Error(let error):
+                    case .error(let error):
                         XCTAssertNil(error)
-                    case .Success(let res):
+                    case .success(let res):
                         XCTAssertEqual(res.info.authenticated, "cookie")
                         XCTAssertEqual(res.userCtx.roles, ["dog"])
                         XCTAssert(res.ok!)
@@ -412,9 +412,9 @@ class swift_couchdbTests: XCTestCase {
                     let database = self.couchdb.use("_users")
                     database.get("org.couchdb.user:wiff") { response in
                         switch response {
-                        case .Error(let error):
+                        case .error(let error):
                             XCTAssertNil(error)
-                        case .Success(let json):
+                        case .success(let json):
                             let doc = CouchDB.Document(data: json as! [String : AnyObject])
                             
                             database.delete(doc) { _ in
@@ -429,13 +429,13 @@ class swift_couchdbTests: XCTestCase {
             
         }
         
-        waitForExpectationsWithTimeout(timeout, handler: nil)
+        waitForExpectations(timeout: timeout, handler: nil)
     }
     
     
     
     func testLogout() {
-        let expectation = expectationWithDescription("logout")
+        let expectation = self.expectation(description: "logout")
         
         // create user
         let nitika = CouchDB.User(name: "nitika", password: "pwd", roles: ["dog"])
@@ -447,18 +447,18 @@ class swift_couchdbTests: XCTestCase {
                 // make sure user has session
                 self.couchdb.getSession() { session in
                     switch session {
-                    case .Error(let error):
+                    case .error(let error):
                         XCTAssertNil(error)
-                    case .Success(let success):
+                    case .success(let success):
                         XCTAssert(success.ok!)
                     }
                     
                     // logout
                     self.couchdb.logout() { response in
                         switch response {
-                        case .Error(let error):
+                        case .error(let error):
                             XCTAssertNil(error)
-                        case .Success(let res):
+                        case .success(let res):
                             XCTAssert(res.ok!)
                         }
                         
@@ -466,9 +466,9 @@ class swift_couchdbTests: XCTestCase {
                         let database = self.couchdb.use("_users")
                         database.get("org.couchdb.user:nitika") { response in
                             switch response {
-                            case .Error(let error):
+                            case .error(let error):
                                 XCTAssertNil(error)
-                            case .Success(let json):
+                            case .success(let json):
                                 let doc = CouchDB.Document(data: json as! [String : AnyObject])
                                 
                                 database.delete(doc) { _ in
@@ -485,7 +485,7 @@ class swift_couchdbTests: XCTestCase {
             
         }
         
-        waitForExpectationsWithTimeout(timeout, handler: nil)
+        waitForExpectations(timeout: timeout, handler: nil)
     }
     
     
