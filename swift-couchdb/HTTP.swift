@@ -6,7 +6,7 @@ import Foundation
 /**
  * HTTP
  */
-public class HTTP {
+open class HTTP {
     
     public typealias Response = (Result) -> Void
     public typealias Headers = [String: String]
@@ -20,11 +20,11 @@ public class HTTP {
     }
     
     public enum Result {
-        case Success(AnyObject, NSHTTPURLResponse)
-        case Error(NSError)
+        case success(Any, HTTPURLResponse)
+        case error(NSError)
     }
     
-    private var request: NSMutableURLRequest
+    fileprivate var request: URLRequest
     
     
     
@@ -32,13 +32,13 @@ public class HTTP {
      * Init
      */
     public init(method: Method, url: String) {
-        self.request = NSMutableURLRequest(URL: NSURL(string: url)!)
-        self.request.HTTPMethod = method.rawValue
+        self.request = URLRequest(url: URL(string: url)!)
+        self.request.httpMethod = method.rawValue
     }
     
     public init(method: Method, url: String, headers: Headers?) {
-        self.request = NSMutableURLRequest(URL: NSURL(string: url)!)
-        self.request.HTTPMethod = method.rawValue
+        self.request = URLRequest(url: URL(string: url)!)
+        self.request.httpMethod = method.rawValue
         if let headers = headers {
             self.request.allHTTPHeaderFields = headers
         }
@@ -51,62 +51,62 @@ public class HTTP {
      */
     
     // GET
-    public class func get(url: String) -> HTTP {
+    open class func get(_ url: String) -> HTTP {
         return HTTP(method: .GET, url: url)
     }
     
-    public class func get(url: String, headers: Headers?) -> HTTP {
+    open class func get(_ url: String, headers: Headers?) -> HTTP {
         return HTTP(method: .GET, url: url, headers: headers)
     }
     
-    public class func get(url: String, done: Response) -> HTTP {
+    open class func get(_ url: String, done: @escaping Response) -> HTTP {
         return HTTP.get(url).end(done)
     }
     
-    public class func get(url: String, headers: Headers?, done: Response) -> HTTP {
+    open class func get(_ url: String, headers: Headers?, done: @escaping Response) -> HTTP {
         return HTTP(method: .GET, url: url, headers: headers).end(done)
     }
     
     // POST
-    public class func post(url: String) -> HTTP {
+    open class func post(_ url: String) -> HTTP {
         return HTTP(method: .POST, url: url)
     }
     
-    public class func post(url: String, headers: Headers?) -> HTTP {
+    open class func post(_ url: String, headers: Headers?) -> HTTP {
         return HTTP(method: .POST, url: url, headers: headers)
     }
     
-    public class func post(url: String, done: Response) -> HTTP {
+    open class func post(_ url: String, done: @escaping Response) -> HTTP {
         return HTTP.post(url).end(done)
     }
     
-    public class func post(url: String, data: AnyObject, done: Response) -> HTTP {
+    open class func post(_ url: String, data: AnyObject, done: @escaping Response) -> HTTP {
         return HTTP.post(url).send(data).end(done)
     }
     
-    public class func post(url: String, headers: Headers?, data: AnyObject, done: Response) -> HTTP {
+    open class func post(_ url: String, headers: Headers?, data: AnyObject, done: @escaping Response) -> HTTP {
         return HTTP.post(url, headers: headers).send(data).end(done)
     }
     
     // PUT
-    public class func put(url: String) -> HTTP {
+    open class func put(_ url: String) -> HTTP {
         return HTTP(method: .PUT, url: url)
     }
     
-    public class func put(url: String, done: Response) -> HTTP {
+    open class func put(_ url: String, done: @escaping Response) -> HTTP {
         return HTTP.put(url).end(done)
     }
     
-    public class func put(url: String, data: AnyObject, done: Response) -> HTTP {
+    open class func put(_ url: String, data: AnyObject, done: @escaping Response) -> HTTP {
         return HTTP.put(url).send(data).end(done)
     }
     
     // DELETE
-    public class func delete(url: String) -> HTTP {
+    open class func delete(_ url: String) -> HTTP {
         return HTTP(method: .DELETE, url: url)
     }
     
-    public class func delete(url: String, done: Response) -> HTTP {
+    open class func delete(_ url: String, done: @escaping Response) -> HTTP {
         return HTTP.delete(url).end(done)
     }
     
@@ -115,42 +115,42 @@ public class HTTP {
     /**
      * Methods
      */
-    public func send(data: AnyObject) -> HTTP {
+    open func send(_ data: AnyObject) -> HTTP {
         do {
-            self.request.HTTPBody = try NSJSONSerialization.dataWithJSONObject(data, options: [])
+            self.request.httpBody = try JSONSerialization.data(withJSONObject: data, options: [])
         } catch {
-            self.request.HTTPBody = nil
+            self.request.httpBody = nil
         }
         self.request.addValue("application/json", forHTTPHeaderField: "Accept")
         self.request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         return self
     }
     
-    public func end(done: Response) -> HTTP {
-        let session = NSURLSession.sharedSession()
-        let task = session.dataTaskWithRequest(self.request) { data, response, error in
+    open func end(_ done: @escaping Response) -> HTTP {
+        let session = URLSession.shared
+        let task = session.dataTask(with: self.request, completionHandler: { data, response, error in
             
             // we have an error -> maybe connection lost
             if let error = error {
-                done(Result.Error(error))
+                done(Result.error(error as NSError))
                 return
             }
             
             // request was success
-            var json: AnyObject!
+            var json: Any!
             if let data = data {
                 do {
-                    json = try NSJSONSerialization.JSONObjectWithData(data, options: [])
+                    json = try JSONSerialization.jsonObject(with: data, options: [])
                 } catch let error as NSError {
-                    done(Result.Error(error))
+                    done(Result.error(error))
                     return
                 }
             }
             
             // looking good
-            let res = response as! NSHTTPURLResponse
-            done(Result.Success(json, res))
-        }
+            let res = response as! HTTPURLResponse
+            done(Result.success(json, res))
+        }) 
         task.resume()
         return self
     }

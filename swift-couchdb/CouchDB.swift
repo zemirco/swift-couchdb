@@ -7,17 +7,17 @@ private let DOMAIN = "CouchDB"
 
 
 
-public class CouchDB {
+open class CouchDB {
     
-    private var url: String
-    private var headers: [String: String]?
+    fileprivate var url: String
+    fileprivate var headers: [String: String]?
     
     public init(url: String, name: String?, password: String?) {
         self.url = url.hasSuffix("/") ? url : "\(url)/"
-        if let name = name, password = password {
+        if let name = name, let password = password {
             let auth = "\(name):\(password)"
-            let data = auth.dataUsingEncoding(NSUTF8StringEncoding)
-            let base = data!.base64EncodedStringWithOptions([])
+            let data = auth.data(using: String.Encoding.utf8)
+            let base = data!.base64EncodedString(options: [])
             self.headers = [
                 "Authorization": "Basic \(base)"
             ]
@@ -38,8 +38,8 @@ public class CouchDB {
             if let d = data as? [String: AnyObject] {
                 if let
                     couchdb = d["couchdb"] as? String,
-                    uuid = d["uuid"] as? String,
-                    version = d["version"] as? String {
+                    let uuid = d["uuid"] as? String,
+                    let version = d["version"] as? String {
                         self.couchdb = couchdb
                         self.uuid = uuid
                         self.version = version
@@ -49,24 +49,24 @@ public class CouchDB {
     }
     
     public enum InfoResponse {
-        case Success(HTTPInfoResponse)
-        case Error(NSError)
+        case success(HTTPInfoResponse)
+        case error(NSError)
     }
     
-    public func info(done: (InfoResponse) -> Void) {
+    open func info(_ done: @escaping (InfoResponse) -> Void) {
         
-        HTTP.get(self.url, headers: self.headers) { response in
+        _ = HTTP.get(self.url, headers: self.headers) { response in
             switch response {
-            case .Error(let error):
-                done(.Error(error))
-            case .Success(let json, let res):
+            case .error(let error):
+                done(.error(error))
+            case .success(let json, let res):
                 if res.statusCode != 200 {
-                    done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
-                        NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
+                    done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
+                        NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: res.statusCode)
                         ])))
                     return
                 }
-                done(.Success(HTTPInfoResponse(data: json)))
+                done(.success(HTTPInfoResponse(data: json as AnyObject)))
             }
         }
     }
@@ -93,8 +93,8 @@ public class CouchDB {
             if let dict = data as? [String: AnyObject] {
                 if let
                     ok = dict["ok"] as? Bool,
-                    name = dict["name"] as? String,
-                    roles = dict["roles"] as? [String] {
+                    let name = dict["name"] as? String,
+                    let roles = dict["roles"] as? [String] {
                         self.ok = ok
                         self.name = name
                         self.roles = roles
@@ -104,27 +104,27 @@ public class CouchDB {
     }
     
     public enum LoginResponse {
-        case Success(HTTPPostSessionResponse)
-        case Error(NSError)
+        case success(HTTPPostSessionResponse)
+        case error(NSError)
     }
     
-    public func login(name: String, password: String, done: (LoginResponse) -> Void) {
+    open func login(_ name: String, password: String, done: @escaping (LoginResponse) -> Void) {
         let data = [
             "name": name,
             "password": password
         ]
-        HTTP.post("\(self.url)_session", headers: self.headers, data: data) { result in
+        _ = HTTP.post("\(self.url)_session", headers: self.headers, data: data as AnyObject) { result in
             switch result {
-            case .Error(let error):
-                done(.Error(error))
-            case .Success(let json, let response):
+            case .error(let error):
+                done(.error(error))
+            case .success(let json, let response):
                 if response.statusCode != 200 {
-                    done(.Error(NSError(domain: DOMAIN, code: response.statusCode, userInfo: [
-                        NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(response.statusCode)
+                    done(.error(NSError(domain: DOMAIN, code: response.statusCode, userInfo: [
+                        NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: response.statusCode)
                     ])))
                     return
                 }
-                done(.Success(HTTPPostSessionResponse(data: json)))
+                done(.success(HTTPPostSessionResponse(data: json as AnyObject)))
             }
         }
     }
@@ -146,7 +146,7 @@ public class CouchDB {
             if let d = data as? [String: AnyObject] {
                 if let
                     name = d["name"] as? String,
-                    roles = d["roles"] as? [String] {
+                    let roles = d["roles"] as? [String] {
                         self.name = name
                         self.roles = roles
                 }
@@ -163,8 +163,8 @@ public class CouchDB {
             if let d = data as? [String: AnyObject] {
                 if let
                     authenticated = d["authenticated"] as? String,
-                    authentication_db = d["authentication_db"] as? String,
-                    authentication_handlers = d["authentication_handlers"] as? [String] {
+                    let authentication_db = d["authentication_db"] as? String,
+                    let authentication_handlers = d["authentication_handlers"] as? [String] {
                         self.authenticated = authenticated
                         self.authentication_db = authentication_db
                         self.authentication_handlers = authentication_handlers
@@ -183,34 +183,34 @@ public class CouchDB {
             if let d = data as? [String: AnyObject] {
                 if let
                     info = d["info"] as? [String: AnyObject],
-                    ok = d["ok"] as? Bool,
-                    userCtx = d["userCtx"] as? [String: AnyObject] {
-                        self.info = HTTPGetSessionResponseInfo(data: info)
+                    let ok = d["ok"] as? Bool,
+                    let userCtx = d["userCtx"] as? [String: AnyObject] {
+                        self.info = HTTPGetSessionResponseInfo(data: info as AnyObject)
                         self.ok = ok
-                        self.userCtx = UserContext(data: userCtx)
+                        self.userCtx = UserContext(data: userCtx as AnyObject)
                 }
             }
         }
     }
     
     public enum GetSessionResponse {
-        case Success(HTTPGetSessionResponse)
-        case Error(NSError)
+        case success(HTTPGetSessionResponse)
+        case error(NSError)
     }
     
-    public func getSession(done: (GetSessionResponse) -> Void) {
-        HTTP.get("\(self.url)_session") { response in
+    open func getSession(_ done: @escaping (GetSessionResponse) -> Void) {
+        _ = HTTP.get("\(self.url)_session") { response in
             switch response {
-            case .Error(let error):
-                done(.Error(error))
-            case .Success(let json, let res):
+            case .error(let error):
+                done(.error(error))
+            case .success(let json, let res):
                 if res.statusCode != 200 {
-                    done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
-                        NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
+                    done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
+                        NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: res.statusCode)
                     ])))
                     return
                 }
-                done(.Success(HTTPGetSessionResponse(data: json)))
+                done(.success(HTTPGetSessionResponse(data: json as AnyObject)))
             }
         }
     }
@@ -235,23 +235,23 @@ public class CouchDB {
     }
     
     public enum LogoutResponse {
-        case Success(HTTPDeleteSessionResponse)
-        case Error(NSError)
+        case success(HTTPDeleteSessionResponse)
+        case error(NSError)
     }
     
-    public func logout(done: (LogoutResponse) -> Void) {
-        HTTP.delete("\(self.url)_session") { response in
+    open func logout(_ done: @escaping (LogoutResponse) -> Void) {
+        _ = HTTP.delete("\(self.url)_session") { response in
             switch response {
-            case .Error(let error):
-                done(.Error(error))
-            case .Success(let json, let res):
+            case .error(let error):
+                done(.error(error))
+            case .success(let json, let res):
                 if res.statusCode != 200 {
-                    done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
-                        NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
+                    done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
+                        NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: res.statusCode)
                     ])))
                     return
                 }
-                done(.Success(HTTPDeleteSessionResponse(data: json)))
+                done(.success(HTTPDeleteSessionResponse(data: json as AnyObject)))
             }
         }
     }
@@ -278,23 +278,23 @@ public class CouchDB {
     }
     
     public enum CreateDatabaseResponse {
-        case Success(HTTPPutCreateSuccess)
-        case Error(NSError)
+        case success(HTTPPutCreateSuccess)
+        case error(NSError)
     }
     
-    public func createDatabase(database: String, done: (CreateDatabaseResponse) -> Void) {
-        HTTP.put("\(self.url)\(database)") { response in
+    open func createDatabase(_ database: String, done: @escaping (CreateDatabaseResponse) -> Void) {
+        _ = HTTP.put("\(self.url)\(database)") { response in
             switch response {
-            case .Error(let error):
-                done(.Error(error))
-            case .Success(let json, let res):
+            case .error(let error):
+                done(.error(error))
+            case .success(let json, let res):
                 if res.statusCode != 201 {
-                    done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
-                        NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
+                    done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
+                        NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: res.statusCode)
                     ])))
                     return
                 }
-                done(.Success(HTTPPutCreateSuccess(data: json)))
+                done(.success(HTTPPutCreateSuccess(data: json as AnyObject)))
             }
         }
     }
@@ -320,21 +320,21 @@ public class CouchDB {
     }
     
     public enum DeleteDatabaseReponse {
-        case Success(HTTPDeleteResponse)
-        case Error(NSError)
+        case success(HTTPDeleteResponse)
+        case error(NSError)
     }
     
-    public func deleteDatabase(database: String, done: (DeleteDatabaseReponse) -> Void) {
-        HTTP.delete("\(self.url)\(database)") { response in
+    open func deleteDatabase(_ database: String, done: @escaping (DeleteDatabaseReponse) -> Void) {
+        _ = HTTP.delete("\(self.url)\(database)") { response in
             switch response {
-            case .Error(let error):
-                done(.Error(error))
-            case .Success(let json, let res):
+            case .error(let error):
+                done(.error(error))
+            case .success(let json, let res):
                 if res.statusCode != 200 {
-                    done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [:])))
+                    done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [:])))
                     return
                 }
-                done(.Success(HTTPDeleteResponse(data: json)))
+                done(.success(HTTPDeleteResponse(data: json as AnyObject)))
             }
             
         }
@@ -352,10 +352,10 @@ public class CouchDB {
      * http://docs.couchdb.org/en/latest/intro/security.html#creating-new-user
      */
     public struct User {
-        public var name: String!
-        public var password: String!
-        public var roles: [String]!
-        private let type: String = "user"
+        public var name: String
+        public var password: String
+        public var roles: [String]
+        fileprivate let type: String = "user"
         
         public init(name: String, password: String, roles: [String]) {
             self.name = name
@@ -365,10 +365,10 @@ public class CouchDB {
         
         public func serialize() -> [String: AnyObject] {
             var dict = [String: AnyObject]()
-            dict["name"] = name
-            dict["password"] = password
-            dict["roles"] = roles
-            dict["type"] = type
+            dict["name"] = name as AnyObject?
+            dict["password"] = password as AnyObject?
+            dict["roles"] = roles as AnyObject?
+            dict["type"] = type as AnyObject?
             return dict
         }
     }
@@ -376,20 +376,20 @@ public class CouchDB {
     /**
      * Create user in db
      */
-    public func createUser(user: User, done: (Database.PostResponse) -> Void) {
+    open func createUser(_ user: User, done: @escaping (Database.PostResponse) -> Void) {
         let data = user.serialize()
-        HTTP.put("\(self.url)_users/org.couchdb.user:\(user.name)", data: data) { response in
+        _ = HTTP.put("\(self.url)_users/org.couchdb.user:\(user.name)", data: data as AnyObject) { response in
             switch response {
-            case .Error(let error):
-                done(.Error(error))
-            case .Success(let json, let res):
+            case .error(let error):
+                done(.error(error))
+            case .success(let json, let res):
                 if res.statusCode != 201 {
-                    done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
-                        NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
+                    done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
+                        NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: res.statusCode)
                     ])))
                     return
                 }
-                done(.Success(Database.HTTPPostDatabaseReponse(data: json)))
+                done(.success(Database.HTTPPostDatabaseReponse(data: json as AnyObject)))
             }
         }
     }
@@ -399,7 +399,7 @@ public class CouchDB {
     /**
      * Use database
      */
-    public func use(name: String) -> Database {
+    open func use(_ name: String) -> Database {
         return Database(url: "\(self.url)\(name)", headers: self.headers)
     }
     
@@ -408,11 +408,11 @@ public class CouchDB {
     /**
      * Document
      */
-    public class Document {
+    open class Document {
         
-        public var dictionary = [String: AnyObject]()
-        public var _id: String?
-        public var _rev: String?
+        open var dictionary = [String: AnyObject]()
+        open var _id: String?
+        open var _rev: String?
         
         public init(_id: String?, _rev: String?) {
             self._id = _id
@@ -422,15 +422,15 @@ public class CouchDB {
         public init(data: [String: AnyObject]) {
             if let
                 _id = data["_id"] as? String,
-                _rev = data["_rev"] as? String {
+                let _rev = data["_rev"] as? String {
                     self._id = _id
                     self._rev = _rev
             }
         }
         
-        public func serialize() -> [String: AnyObject] {
-            self.dictionary["_id"] = self._id
-            self.dictionary["_rev"] = self._rev
+        open func serialize() -> [String: AnyObject] {
+            self.dictionary["_id"] = self._id as AnyObject?
+            self.dictionary["_rev"] = self._rev as AnyObject?
             return self.dictionary
         }
     }
@@ -440,27 +440,27 @@ public class CouchDB {
     /**
      * Design document
      */
-    public class DesignDocument: Document {
+    open class DesignDocument: Document {
         
-        public let language: String = "javascript"
-        public var views: [String: DesignDocumentView]
+        open let language: String = "javascript"
+        open var views: [String: DesignDocumentView]
         
         public init(_id: String?, _rev: String?, views: [String: DesignDocumentView]) {
             self.views = views
             super.init(_id: "_design/\(_id!)", _rev: _rev)
         }
         
-        public override func serialize() -> [String : AnyObject] {
-            self.dictionary["language"] = language
+        open override func serialize() -> [String : AnyObject] {
+            self.dictionary["language"] = language as AnyObject?
             var wrapper = [String: AnyObject]()
             for (key, value) in self.views {
                 var _views = ["map": value.map]
                 if let reduce = value.reduce {
                     _views["reduce"] = reduce
                 }
-                wrapper[key] = _views
+                wrapper[key] = _views as AnyObject?
             }
-            self.dictionary["views"] = wrapper
+            self.dictionary["views"] = wrapper as AnyObject?
             return super.serialize()
         }
         
@@ -471,9 +471,9 @@ public class CouchDB {
     /**
      * View
      */
-    public class DesignDocumentView {
-        public var map: String
-        public var reduce: String?
+    open class DesignDocumentView {
+        open var map: String
+        open var reduce: String?
         
         public init(map: String, reduce: String?) {
             self.map = map
@@ -489,27 +489,27 @@ public class CouchDB {
      *
      * http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
      */
-    public class QueryParameters: QueryString {
+    open class QueryParameters: QueryString {
         
-        public var conflicts: Bool?
-        public var descending: Bool?
-        public var endkey: String?
-        public var endkey_docid: String?
-        public var group: Bool?
-        public var group_level: Int?
-        public var include_docs: Bool?
-        public var attachments: Bool?
-        public var att_encoding_info: Bool?
-        public var inclusive_end: Bool?
-        public var key: String?
-        public var keys: [String]?
-        public var limit: Int?
-        public var reduce: Bool?
-        public var skip: Int?
-        public var stale: String?
-        public var startkey: String?
-        public var startkey_docid: String?
-        public var update_seq: Bool?
+        open var conflicts: Bool?
+        open var descending: Bool?
+        open var endkey: String?
+        open var endkey_docid: String?
+        open var group: Bool?
+        open var group_level: Int?
+        open var include_docs: Bool?
+        open var attachments: Bool?
+        open var att_encoding_info: Bool?
+        open var inclusive_end: Bool?
+        open var key: String?
+        open var keys: [String]?
+        open var limit: Int?
+        open var reduce: Bool?
+        open var skip: Int?
+        open var stale: String?
+        open var startkey: String?
+        open var startkey_docid: String?
+        open var update_seq: Bool?
         
         public override init() {
             super.init()
@@ -522,10 +522,10 @@ public class CouchDB {
     /**
      * Database
      */
-    public class Database {
+    open class Database {
         
-        private var url: String
-        private var headers: [String: String]?
+        fileprivate var url: String
+        fileprivate var headers: [String: String]?
         
         public init(url: String, headers: [String: String]?) {
             self.url = url.hasSuffix("/") ? url : "\(url)/"
@@ -558,21 +558,21 @@ public class CouchDB {
         }
         
         public enum PostResponse {
-            case Success(HTTPPostDatabaseReponse)
-            case Error(NSError)
+            case success(HTTPPostDatabaseReponse)
+            case error(NSError)
         }
         
-        public func post(document: Document, done: (PostResponse) -> Void) {
-            HTTP.post(self.url, data: document.serialize()) { response in
+        open func post(_ document: Document, done: @escaping (PostResponse) -> Void) {
+            _ = HTTP.post(self.url, data: document.serialize() as AnyObject) { response in
                 switch response {
-                case .Error(let error):
-                    done(.Error(error))
-                case .Success(let json, let res):
+                case .error(let error):
+                    done(.error(error))
+                case .success(let json, let res):
                     if res.statusCode != 201 {
-                        done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [:])))
+                        done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [:])))
                         return
                     }
-                    done(.Success(HTTPPostDatabaseReponse(data: json)))
+                    done(.success(HTTPPostDatabaseReponse(data: json as AnyObject)))
                 }
             }
         }
@@ -582,19 +582,19 @@ public class CouchDB {
          *
          * http://docs.couchdb.org/en/latest/api/document/common.html#put--db-docid
          */
-        public func put(document: Document, done: (PostResponse) -> Void) {
-            HTTP.put("\(self.url)\(document._id!)", data: document.serialize()) { response in
+        open func put(_ document: Document, done: @escaping (PostResponse) -> Void) {
+            _ = HTTP.put("\(self.url)\(document._id!)", data: document.serialize() as AnyObject) { response in
                 switch response {
-                case .Error(let error):
-                    done(.Error(error))
-                case .Success(let json, let res):
+                case .error(let error):
+                    done(.error(error))
+                case .success(let json, let res):
                     if res.statusCode != 201 {
-                        done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
-                            NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
+                        done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
+                            NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: res.statusCode)
                             ])))
                         return
                     }
-                    done(.Success(HTTPPostDatabaseReponse(data: json)))
+                    done(.success(HTTPPostDatabaseReponse(data: json as AnyObject)))
                 }
             }
         }
@@ -606,19 +606,19 @@ public class CouchDB {
          *
          * http://docs.couchdb.org/en/latest/api/document/common.html#delete--db-docid
          */
-        public func delete(document: Document, done: (PostResponse) -> Void) {
-            HTTP.delete("\(self.url)\(document._id!)?rev=\(document._rev!)") { response in
+        open func delete(_ document: Document, done: @escaping (PostResponse) -> Void) {
+            _ = HTTP.delete("\(self.url)\(document._id!)?rev=\(document._rev!)") { response in
                 switch response {
-                case .Error(let error):
-                    done(.Error(error))
-                case .Success(let json, let res):
+                case .error(let error):
+                    done(.error(error))
+                case .success(let json, let res):
                     if res.statusCode != 200 {
-                        done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
-                            NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
+                        done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
+                            NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: res.statusCode)
                             ])))
                         return
                     }
-                    done(.Success(HTTPPostDatabaseReponse(data: json)))
+                    done(.success(HTTPPostDatabaseReponse(data: json as AnyObject)))
                 }
             }
         }
@@ -631,24 +631,24 @@ public class CouchDB {
          * http://docs.couchdb.org/en/latest/api/document/common.html#get--db-docid
          */
         public enum GetResponse {
-            case Success(AnyObject)
-            case Error(NSError)
+            case success(AnyObject)
+            case error(NSError)
         }
         
         
-        public func get(id: String, done: (GetResponse) -> Void) {
-            HTTP.get("\(self.url)\(id)") { response in
+        open func get(_ id: String, done: @escaping (GetResponse) -> Void) {
+            _ = HTTP.get("\(self.url)\(id)") { response in
                 switch response {
-                case .Error(let error):
-                    done(.Error(error))
-                case .Success(let json, let res):
+                case .error(let error):
+                    done(.error(error))
+                case .success(let json, let res):
                     if res.statusCode != 200 {
-                        done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
-                            NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
+                        done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
+                            NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: res.statusCode)
                             ])))
                         return
                     }
-                    done(.Success(json))
+                    done(.success(json as AnyObject))
                 }
             }
         }
@@ -670,7 +670,7 @@ public class CouchDB {
                 if let dict = data as? [String: AnyObject] {
                     if let
                         id = dict["id"] as? String,
-                        rev = dict["rev"] as? String {
+                        let rev = dict["rev"] as? String {
                             self.id = id
                             self.rev = rev
                     }
@@ -686,29 +686,29 @@ public class CouchDB {
         }
         
         public enum BulkResponse {
-            case Success([HTTPBulkResponse])
-            case Error(NSError)
+            case success([HTTPBulkResponse])
+            case error(NSError)
         }
         
-        public func bulk(documents: [Document], done: (BulkResponse) -> Void) {
+        open func bulk(_ documents: [Document], done: @escaping (BulkResponse) -> Void) {
             let docs = documents.map() { $0.serialize() }
             let data = [
                 "docs": docs
             ]
-            HTTP.post("\(self.url)_bulk_docs", data: data) { response in
+            _ = HTTP.post("\(self.url)_bulk_docs", data: data as AnyObject) { response in
                 switch response {
-                case .Error(let error):
-                    done(.Error(error))
-                case .Success(let json, let res):
+                case .error(let error):
+                    done(.error(error))
+                case .success(let json, let res):
                     if res.statusCode != 201 {
-                        done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
-                            NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
+                        done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
+                            NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: res.statusCode)
                             ])))
                         return
                     }
                     if let data = json as? [AnyObject] {
                         let arr = data.map() { HTTPBulkResponse(data: $0) }
-                        done(.Success(arr))
+                        done(.success(arr))
                     }
                 }
             }
@@ -719,7 +719,7 @@ public class CouchDB {
         /**
          * Use certain view (design document)
          */
-        public func view(name: String) -> View {
+        open func view(_ name: String) -> View {
             return View(url: "\(self.url)_design/\(name)/", headers: self.headers)
         }
         
@@ -730,7 +730,7 @@ public class CouchDB {
     /**
      * View
      */
-    public class View {
+    open class View {
         
         /**
          * http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
@@ -783,8 +783,8 @@ public class CouchDB {
             }
         }
         
-        private var url: String
-        private var headers: [String: String]?
+        fileprivate var url: String
+        fileprivate var headers: [String: String]?
         
         public init(url: String, headers: [String: String]?) {
             self.url = url.hasSuffix("/") ? url : "\(url)/"
@@ -792,24 +792,24 @@ public class CouchDB {
         }
         
         public enum Response {
-            case Success(GETResponse)
-            case Error(NSError)
+            case success(GETResponse)
+            case error(NSError)
         }
         
-        public func get(name: String, query: QueryParameters, done: (Response) -> Void) {
-            let params = query.encode().stringByAddingPercentEncodingWithAllowedCharacters(.URLQueryAllowedCharacterSet())!
-            HTTP.get("\(self.url)_view/\(name)?\(params)", headers: self.headers) { response in
+        open func get(_ name: String, query: QueryParameters, done: @escaping (Response) -> Void) {
+            let params = query.encode().addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+            _ = HTTP.get("\(self.url)_view/\(name)?\(params)", headers: self.headers) { response in
                 switch response {
-                case .Error(let error):
-                    done(.Error(error))
-                case .Success(let json, let res):
+                case .error(let error):
+                    done(.error(error))
+                case .success(let json, let res):
                     if res.statusCode != 200 {
-                        done(.Error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
-                            NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(res.statusCode)
+                        done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
+                            NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: res.statusCode)
                             ])))
                         return
                     }
-                    done(.Success(GETResponse(data: json)))
+                    done(.success(GETResponse(data: json as AnyObject)))
                 }
             }
         }

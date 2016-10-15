@@ -6,7 +6,7 @@ import Foundation
 /**
  * Query string
  */
-public class QueryString {
+open class QueryString {
     
     
     
@@ -19,29 +19,29 @@ public class QueryString {
     /**
      * encode
      */
-    public func encode() -> String {
+    open func encode() -> String {
         
         let mirror = Mirror(reflecting: self)
         var params = [String]()
         
         for (label, value) in mirror.children {
             
-            if value.dynamicType is String.Type {
+            if type(of: (value)) is String.Type {
                 params.append(handleString(label!, value: value))
             }
 
-            else if value.dynamicType is Bool.Type {
+            else if type(of: (value)) is Bool.Type {
                 params.append("\(label!)=\(value)")
             }
             
-            else if value.dynamicType is Int.Type {
+            else if type(of: (value)) is Int.Type {
                 params.append(handleInt(label!, value: value))
             }
             
-            else if value.dynamicType is [String].Type {
+            else if type(of: (value)) is [String].Type {
                 if let arr = value as? [String] {
                     let vals = arr.map() {"\"\($0)\""}
-                    let values = vals.joinWithSeparator(",")
+                    let values = vals.joined(separator: ",")
                     params.append("\(label!)=[\(values)]")
                 }
             }
@@ -50,45 +50,49 @@ public class QueryString {
                 // handle optionals
                 let sub = Mirror(reflecting: value)
                 
-                switch sub.displayStyle! {
-                case .Optional:
-                    
-                    for (subLabel, subValue) in sub.children {
+                if let displayStyle = sub.displayStyle {
+                    switch displayStyle {
+                    case .optional:
                         
-                        if subLabel == "Some" {
+                        for (subLabel, subValue) in sub.children {
                             
-                            if subValue.dynamicType is String.Type {
-                                params.append(handleString(label!, value: subValue))
-                            }
-                                
-                            else if subValue.dynamicType is Int.Type {
-                                params.append(handleInt(label!, value: subValue))
+                            if let subLabel = subLabel {
+                                if subLabel == "some" {
+                                    
+                                    if type(of: (subValue)) is String.Type {
+                                        params.append(handleString(label!, value: subValue))
+                                    }
+                                        
+                                    else if type(of: (subValue)) is Int.Type {
+                                        params.append(handleInt(label!, value: subValue))
+                                    }
+                                        
+                                    else if type(of: (subValue)) is Bool.Type {
+                                        params.append("\(label!)=\(subValue)")
+                                    }
+                                }
                             }
                             
-                            else if subValue.dynamicType is Bool.Type {
-                                params.append("\(label!)=\(subValue)")
-                            }
                         }
                         
+                    default:
+                        break
                     }
-                    
-                default:
-                    break
                 }
                 
             }
         }
         
-        return params.joinWithSeparator("&")
+        return params.joined(separator: "&")
         
     }
     
     // handle String
-    private func handleString(key: String, value: Any) -> String {
+    fileprivate func handleString(_ key: String, value: Any) -> String {
         return "\(key)=\"\(value)\""
     }
     
-    private func handleInt(key: String, value: Any) -> String {
+    fileprivate func handleInt(_ key: String, value: Any) -> String {
         return "\(key)=\(value)"
     }
     

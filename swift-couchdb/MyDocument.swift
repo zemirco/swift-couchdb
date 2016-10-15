@@ -1,9 +1,9 @@
 
 import Foundation
 
-public class MyDocument: CouchDB.Document {
+open class MyDocument: CouchDB.Document {
     
-    public var city: String?
+    open var city: String?
     
     public init(city: String, _id: String?, _rev: String?) {
         self.city = city
@@ -17,8 +17,8 @@ public class MyDocument: CouchDB.Document {
         super.init(data: data)
     }
     
-    public override func serialize() -> [String: AnyObject] {
-        self.dictionary["city"] = self.city
+    open override func serialize() -> [String: AnyObject] {
+        self.dictionary["city"] = self.city as AnyObject?
         return super.serialize()
     }
     
