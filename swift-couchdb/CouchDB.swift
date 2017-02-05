@@ -1,11 +1,5 @@
 
-import Foundation
-
-
-
-private let DOMAIN = "CouchDB"
-
-
+import Alamofire
 
 open class CouchDB {
     
@@ -50,23 +44,19 @@ open class CouchDB {
     
     public enum InfoResponse {
         case success(HTTPInfoResponse)
-        case error(NSError)
+        case error(Error)
     }
     
     open func info(_ done: @escaping (InfoResponse) -> Void) {
-        
-        _ = HTTP.get(self.url, headers: self.headers) { response in
-            switch response {
-            case .error(let error):
+        Alamofire.request(self.url, headers: self.headers).validate().responseJSON { response in
+            switch response.result {
+            case .failure(let error):
                 done(.error(error))
-            case .success(let json, let res):
-                if res.statusCode != 200 {
-                    done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
-                        NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: res.statusCode)
-                        ])))
+            case .success:
+                if let json = response.result.value {
+                    done(.success(HTTPInfoResponse(data: json as AnyObject)))
                     return
                 }
-                done(.success(HTTPInfoResponse(data: json as AnyObject)))
             }
         }
     }
@@ -105,7 +95,7 @@ open class CouchDB {
     
     public enum LoginResponse {
         case success(HTTPPostSessionResponse)
-        case error(NSError)
+        case error(Error)
     }
     
     open func login(_ name: String, password: String, done: @escaping (LoginResponse) -> Void) {
@@ -113,18 +103,15 @@ open class CouchDB {
             "name": name,
             "password": password
         ]
-        _ = HTTP.post("\(self.url)_session", headers: self.headers, data: data as AnyObject) { result in
-            switch result {
-            case .error(let error):
+        Alamofire.request("\(self.url)_session", method: .post, parameters: data, encoding: JSONEncoding.default, headers: self.headers).validate().responseJSON { response in
+            switch response.result {
+            case .failure(let error):
                 done(.error(error))
-            case .success(let json, let response):
-                if response.statusCode != 200 {
-                    done(.error(NSError(domain: DOMAIN, code: response.statusCode, userInfo: [
-                        NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: response.statusCode)
-                    ])))
+            case .success:
+                if let json = response.result.value {
+                    done(.success(HTTPPostSessionResponse(data: json as AnyObject)))
                     return
                 }
-                done(.success(HTTPPostSessionResponse(data: json as AnyObject)))
             }
         }
     }
@@ -195,22 +182,19 @@ open class CouchDB {
     
     public enum GetSessionResponse {
         case success(HTTPGetSessionResponse)
-        case error(NSError)
+        case error(Error)
     }
     
     open func getSession(_ done: @escaping (GetSessionResponse) -> Void) {
-        _ = HTTP.get("\(self.url)_session") { response in
-            switch response {
-            case .error(let error):
+        Alamofire.request("\(self.url)_session").validate().responseJSON { response in
+            switch response.result {
+            case .failure(let error):
                 done(.error(error))
-            case .success(let json, let res):
-                if res.statusCode != 200 {
-                    done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
-                        NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: res.statusCode)
-                    ])))
+            case .success:
+                if let json = response.result.value {
+                    done(.success(HTTPGetSessionResponse(data: json as AnyObject)))
                     return
                 }
-                done(.success(HTTPGetSessionResponse(data: json as AnyObject)))
             }
         }
     }
@@ -236,22 +220,19 @@ open class CouchDB {
     
     public enum LogoutResponse {
         case success(HTTPDeleteSessionResponse)
-        case error(NSError)
+        case error(Error)
     }
     
     open func logout(_ done: @escaping (LogoutResponse) -> Void) {
-        _ = HTTP.delete("\(self.url)_session") { response in
-            switch response {
-            case .error(let error):
+        Alamofire.request("\(self.url)_session", method: .delete).validate().responseJSON { response in
+            switch response.result {
+            case .failure(let error):
                 done(.error(error))
-            case .success(let json, let res):
-                if res.statusCode != 200 {
-                    done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
-                        NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: res.statusCode)
-                    ])))
+            case .success:
+                if let json = response.result.value {
+                    done(.success(HTTPDeleteSessionResponse(data: json as AnyObject)))
                     return
                 }
-                done(.success(HTTPDeleteSessionResponse(data: json as AnyObject)))
             }
         }
     }
@@ -279,22 +260,19 @@ open class CouchDB {
     
     public enum CreateDatabaseResponse {
         case success(HTTPPutCreateSuccess)
-        case error(NSError)
+        case error(Error)
     }
     
     open func createDatabase(_ database: String, done: @escaping (CreateDatabaseResponse) -> Void) {
-        _ = HTTP.put("\(self.url)\(database)") { response in
-            switch response {
-            case .error(let error):
+        Alamofire.request("\(self.url)\(database)", method: .put).validate().responseJSON { response in
+            switch response.result {
+            case .failure(let error):
                 done(.error(error))
-            case .success(let json, let res):
-                if res.statusCode != 201 {
-                    done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
-                        NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: res.statusCode)
-                    ])))
+            case .success:
+                if let json = response.result.value {
+                    done(.success(HTTPPutCreateSuccess(data: json as AnyObject)))
                     return
                 }
-                done(.success(HTTPPutCreateSuccess(data: json as AnyObject)))
             }
         }
     }
@@ -321,20 +299,19 @@ open class CouchDB {
     
     public enum DeleteDatabaseReponse {
         case success(HTTPDeleteResponse)
-        case error(NSError)
+        case error(Error)
     }
     
     open func deleteDatabase(_ database: String, done: @escaping (DeleteDatabaseReponse) -> Void) {
-        _ = HTTP.delete("\(self.url)\(database)") { response in
-            switch response {
-            case .error(let error):
+        Alamofire.request("\(self.url)\(database)", method: .delete).validate().responseJSON { response in
+            switch response.result {
+            case .failure(let error):
                 done(.error(error))
-            case .success(let json, let res):
-                if res.statusCode != 200 {
-                    done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [:])))
+            case .success:
+                if let json = response.result.value {
+                    done(.success(HTTPDeleteResponse(data: json as AnyObject)))
                     return
                 }
-                done(.success(HTTPDeleteResponse(data: json as AnyObject)))
             }
             
         }
@@ -378,18 +355,15 @@ open class CouchDB {
      */
     open func createUser(_ user: User, done: @escaping (Database.PostResponse) -> Void) {
         let data = user.serialize()
-        _ = HTTP.put("\(self.url)_users/org.couchdb.user:\(user.name)", data: data as AnyObject) { response in
-            switch response {
-            case .error(let error):
+        Alamofire.request("\(self.url)_users/org.couchdb.user:\(user.name)", method: .put, parameters: data, encoding: JSONEncoding.default).validate().responseJSON { response in
+            switch response.result {
+            case .failure(let error):
                 done(.error(error))
-            case .success(let json, let res):
-                if res.statusCode != 201 {
-                    done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
-                        NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: res.statusCode)
-                    ])))
+            case .success:
+                if let json = response.result.value {
+                    done(.success(Database.HTTPPostDatabaseReponse(data: json as AnyObject)))
                     return
                 }
-                done(.success(Database.HTTPPostDatabaseReponse(data: json as AnyObject)))
             }
         }
     }
@@ -559,20 +533,19 @@ open class CouchDB {
         
         public enum PostResponse {
             case success(HTTPPostDatabaseReponse)
-            case error(NSError)
+            case error(Error)
         }
         
         open func post(_ document: Document, done: @escaping (PostResponse) -> Void) {
-            _ = HTTP.post(self.url, data: document.serialize() as AnyObject) { response in
-                switch response {
-                case .error(let error):
+            Alamofire.request(self.url, method: .post, parameters: document.serialize(), encoding: JSONEncoding.default).validate().responseJSON { response in
+                switch response.result {
+                case .failure(let error):
                     done(.error(error))
-                case .success(let json, let res):
-                    if res.statusCode != 201 {
-                        done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [:])))
+                case .success:
+                    if let json = response.result.value {
+                        done(.success(HTTPPostDatabaseReponse(data: json as AnyObject)))
                         return
                     }
-                    done(.success(HTTPPostDatabaseReponse(data: json as AnyObject)))
                 }
             }
         }
@@ -583,18 +556,15 @@ open class CouchDB {
          * http://docs.couchdb.org/en/latest/api/document/common.html#put--db-docid
          */
         open func put(_ document: Document, done: @escaping (PostResponse) -> Void) {
-            _ = HTTP.put("\(self.url)\(document._id!)", data: document.serialize() as AnyObject) { response in
-                switch response {
-                case .error(let error):
+            Alamofire.request("\(self.url)\(document._id!)", method: .put, parameters: document.serialize(), encoding: JSONEncoding.default).validate().responseJSON { response in
+                switch response.result {
+                case .failure(let error):
                     done(.error(error))
-                case .success(let json, let res):
-                    if res.statusCode != 201 {
-                        done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
-                            NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: res.statusCode)
-                            ])))
+                case .success:
+                    if let json = response.result.value {
+                        done(.success(HTTPPostDatabaseReponse(data: json as AnyObject)))
                         return
                     }
-                    done(.success(HTTPPostDatabaseReponse(data: json as AnyObject)))
                 }
             }
         }
@@ -607,18 +577,15 @@ open class CouchDB {
          * http://docs.couchdb.org/en/latest/api/document/common.html#delete--db-docid
          */
         open func delete(_ document: Document, done: @escaping (PostResponse) -> Void) {
-            _ = HTTP.delete("\(self.url)\(document._id!)?rev=\(document._rev!)") { response in
-                switch response {
-                case .error(let error):
+            Alamofire.request("\(self.url)\(document._id!)?rev=\(document._rev!)", method: .delete).validate().responseJSON { response in
+                switch response.result {
+                case .failure(let error):
                     done(.error(error))
-                case .success(let json, let res):
-                    if res.statusCode != 200 {
-                        done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
-                            NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: res.statusCode)
-                            ])))
+                case .success:
+                    if let json = response.result.value {
+                        done(.success(HTTPPostDatabaseReponse(data: json as AnyObject)))
                         return
                     }
-                    done(.success(HTTPPostDatabaseReponse(data: json as AnyObject)))
                 }
             }
         }
@@ -632,23 +599,20 @@ open class CouchDB {
          */
         public enum GetResponse {
             case success(AnyObject)
-            case error(NSError)
+            case error(Error)
         }
         
         
         open func get(_ id: String, done: @escaping (GetResponse) -> Void) {
-            _ = HTTP.get("\(self.url)\(id)") { response in
-                switch response {
-                case .error(let error):
+            Alamofire.request("\(self.url)\(id)").validate().responseJSON { response in
+                switch response.result {
+                case .failure(let error):
                     done(.error(error))
-                case .success(let json, let res):
-                    if res.statusCode != 200 {
-                        done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
-                            NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: res.statusCode)
-                            ])))
+                case .success:
+                    if let json = response.result.value {
+                        done(.success(json as AnyObject))
                         return
                     }
-                    done(.success(json as AnyObject))
                 }
             }
         }
@@ -687,7 +651,7 @@ open class CouchDB {
         
         public enum BulkResponse {
             case success([HTTPBulkResponse])
-            case error(NSError)
+            case error(Error)
         }
         
         open func bulk(_ documents: [Document], done: @escaping (BulkResponse) -> Void) {
@@ -695,20 +659,16 @@ open class CouchDB {
             let data = [
                 "docs": docs
             ]
-            _ = HTTP.post("\(self.url)_bulk_docs", data: data as AnyObject) { response in
-                switch response {
-                case .error(let error):
+            Alamofire.request("\(self.url)_bulk_docs", method: .post, parameters: data, encoding: JSONEncoding.default).validate().responseJSON { response in
+                switch response.result {
+                case .failure(let error):
                     done(.error(error))
-                case .success(let json, let res):
-                    if res.statusCode != 201 {
-                        done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
-                            NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: res.statusCode)
-                            ])))
-                        return
-                    }
-                    if let data = json as? [AnyObject] {
-                        let arr = data.map() { HTTPBulkResponse(data: $0) }
-                        done(.success(arr))
+                case .success:
+                    if let json = response.result.value {
+                        if let data = json as? [AnyObject] {
+                            let arr = data.map() { HTTPBulkResponse(data: $0) }
+                            done(.success(arr))
+                        }
                     }
                 }
             }
@@ -793,23 +753,20 @@ open class CouchDB {
         
         public enum Response {
             case success(GETResponse)
-            case error(NSError)
+            case error(Error)
         }
         
         open func get(_ name: String, query: QueryParameters, done: @escaping (Response) -> Void) {
             let params = query.encode().addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
-            _ = HTTP.get("\(self.url)_view/\(name)?\(params)", headers: self.headers) { response in
-                switch response {
-                case .error(let error):
+            Alamofire.request("\(self.url)_view/\(name)?\(params)", headers: self.headers).validate().responseJSON { response in
+                switch response.result {
+                case .failure(let error):
                     done(.error(error))
-                case .success(let json, let res):
-                    if res.statusCode != 200 {
-                        done(.error(NSError(domain: DOMAIN, code: res.statusCode, userInfo: [
-                            NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: res.statusCode)
-                            ])))
+                case .success:
+                    if let json = response.result.value {
+                        done(.success(GETResponse(data: json as AnyObject)))
                         return
                     }
-                    done(.success(GETResponse(data: json as AnyObject)))
                 }
             }
         }
