@@ -43,7 +43,7 @@ open class CouchDB {
     }
     
     public enum InfoResponse {
-        case success(HTTPInfoResponse)
+        case success(DataResponse<Any>, HTTPInfoResponse)
         case error(Error)
     }
     
@@ -54,7 +54,7 @@ open class CouchDB {
                 done(.error(error))
             case .success:
                 if let json = response.result.value {
-                    done(.success(HTTPInfoResponse(data: json as AnyObject)))
+                    done(.success(response, HTTPInfoResponse(data: json as AnyObject)))
                     return
                 }
             }
@@ -94,7 +94,7 @@ open class CouchDB {
     }
     
     public enum LoginResponse {
-        case success(HTTPPostSessionResponse)
+        case success(DataResponse<Any>, HTTPPostSessionResponse)
         case error(Error)
     }
     
@@ -109,7 +109,7 @@ open class CouchDB {
                 done(.error(error))
             case .success:
                 if let json = response.result.value {
-                    done(.success(HTTPPostSessionResponse(data: json as AnyObject)))
+                    done(.success(response, HTTPPostSessionResponse(data: json as AnyObject)))
                     return
                 }
             }
@@ -181,7 +181,7 @@ open class CouchDB {
     }
     
     public enum GetSessionResponse {
-        case success(HTTPGetSessionResponse)
+        case success(DataResponse<Any>, HTTPGetSessionResponse)
         case error(Error)
     }
     
@@ -192,7 +192,7 @@ open class CouchDB {
                 done(.error(error))
             case .success:
                 if let json = response.result.value {
-                    done(.success(HTTPGetSessionResponse(data: json as AnyObject)))
+                    done(.success(response, HTTPGetSessionResponse(data: json as AnyObject)))
                     return
                 }
             }
@@ -219,7 +219,7 @@ open class CouchDB {
     }
     
     public enum LogoutResponse {
-        case success(HTTPDeleteSessionResponse)
+        case success(DataResponse<Any>, HTTPDeleteSessionResponse)
         case error(Error)
     }
     
@@ -230,7 +230,7 @@ open class CouchDB {
                 done(.error(error))
             case .success:
                 if let json = response.result.value {
-                    done(.success(HTTPDeleteSessionResponse(data: json as AnyObject)))
+                    done(.success(response, HTTPDeleteSessionResponse(data: json as AnyObject)))
                     return
                 }
             }
@@ -259,7 +259,7 @@ open class CouchDB {
     }
     
     public enum CreateDatabaseResponse {
-        case success(HTTPPutCreateSuccess)
+        case success(DataResponse<Any>, HTTPPutCreateSuccess)
         case error(Error)
     }
     
@@ -270,7 +270,7 @@ open class CouchDB {
                 done(.error(error))
             case .success:
                 if let json = response.result.value {
-                    done(.success(HTTPPutCreateSuccess(data: json as AnyObject)))
+                    done(.success(response, HTTPPutCreateSuccess(data: json as AnyObject)))
                     return
                 }
             }
@@ -298,7 +298,7 @@ open class CouchDB {
     }
     
     public enum DeleteDatabaseReponse {
-        case success(HTTPDeleteResponse)
+        case success(DataResponse<Any>, HTTPDeleteResponse)
         case error(Error)
     }
     
@@ -309,7 +309,7 @@ open class CouchDB {
                 done(.error(error))
             case .success:
                 if let json = response.result.value {
-                    done(.success(HTTPDeleteResponse(data: json as AnyObject)))
+                    done(.success(response, HTTPDeleteResponse(data: json as AnyObject)))
                     return
                 }
             }
@@ -361,7 +361,7 @@ open class CouchDB {
                 done(.error(error))
             case .success:
                 if let json = response.result.value {
-                    done(.success(Database.HTTPPostDatabaseReponse(data: json as AnyObject)))
+                    done(.success(response, Database.HTTPPostDatabaseReponse(data: json as AnyObject)))
                     return
                 }
             }
@@ -532,7 +532,7 @@ open class CouchDB {
         }
         
         public enum PostResponse {
-            case success(HTTPPostDatabaseReponse)
+            case success(DataResponse<Any>, HTTPPostDatabaseReponse)
             case error(Error)
         }
         
@@ -543,7 +543,7 @@ open class CouchDB {
                     done(.error(error))
                 case .success:
                     if let json = response.result.value {
-                        done(.success(HTTPPostDatabaseReponse(data: json as AnyObject)))
+                        done(.success(response, HTTPPostDatabaseReponse(data: json as AnyObject)))
                         return
                     }
                 }
@@ -562,7 +562,7 @@ open class CouchDB {
                     done(.error(error))
                 case .success:
                     if let json = response.result.value {
-                        done(.success(HTTPPostDatabaseReponse(data: json as AnyObject)))
+                        done(.success(response, HTTPPostDatabaseReponse(data: json as AnyObject)))
                         return
                     }
                 }
@@ -583,7 +583,7 @@ open class CouchDB {
                     done(.error(error))
                 case .success:
                     if let json = response.result.value {
-                        done(.success(HTTPPostDatabaseReponse(data: json as AnyObject)))
+                        done(.success(response, HTTPPostDatabaseReponse(data: json as AnyObject)))
                         return
                     }
                 }
@@ -598,7 +598,7 @@ open class CouchDB {
          * http://docs.couchdb.org/en/latest/api/document/common.html#get--db-docid
          */
         public enum GetResponse {
-            case success(AnyObject)
+            case success(DataResponse<Any>, AnyObject)
             case error(Error)
         }
         
@@ -610,7 +610,7 @@ open class CouchDB {
                     done(.error(error))
                 case .success:
                     if let json = response.result.value {
-                        done(.success(json as AnyObject))
+                        done(.success(response, json as AnyObject))
                         return
                     }
                 }
@@ -650,7 +650,7 @@ open class CouchDB {
         }
         
         public enum BulkResponse {
-            case success([HTTPBulkResponse])
+            case success(DataResponse<Any>, [HTTPBulkResponse])
             case error(Error)
         }
         
@@ -667,7 +667,7 @@ open class CouchDB {
                     if let json = response.result.value {
                         if let data = json as? [AnyObject] {
                             let arr = data.map() { HTTPBulkResponse(data: $0) }
-                            done(.success(arr))
+                            done(.success(response, arr))
                         }
                     }
                 }
@@ -752,7 +752,7 @@ open class CouchDB {
         }
         
         public enum Response {
-            case success(GETResponse)
+            case success(DataResponse<Any>, GETResponse)
             case error(Error)
         }
         
@@ -764,7 +764,7 @@ open class CouchDB {
                     done(.error(error))
                 case .success:
                     if let json = response.result.value {
-                        done(.success(GETResponse(data: json as AnyObject)))
+                        done(.success(response, GETResponse(data: json as AnyObject)))
                         return
                     }
                 }
