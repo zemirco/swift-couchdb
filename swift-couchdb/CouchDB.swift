@@ -28,8 +28,8 @@ open class CouchDB {
         public var uuid: String!
         public var version: String!
         
-        public init(data: AnyObject) {
-            if let d = data as? [String: AnyObject] {
+        public init(data: Any) {
+            if let d = data as? [String: Any] {
                 if let
                     couchdb = d["couchdb"] as? String,
                     let uuid = d["uuid"] as? String,
@@ -54,7 +54,7 @@ open class CouchDB {
                 done(.error(error))
             case .success:
                 if let json = response.result.value {
-                    done(.success(response, HTTPInfoResponse(data: json as AnyObject)))
+                    done(.success(response, HTTPInfoResponse(data: json)))
                     return
                 }
             }
@@ -79,8 +79,8 @@ open class CouchDB {
         public var name: String!
         public var roles: [String]!
         
-        public init(data: AnyObject) {
-            if let dict = data as? [String: AnyObject] {
+        public init(data: Any) {
+            if let dict = data as? [String: Any] {
                 if let
                     ok = dict["ok"] as? Bool,
                     let name = dict["name"] as? String,
@@ -109,7 +109,7 @@ open class CouchDB {
                 done(.error(error))
             case .success:
                 if let json = response.result.value {
-                    done(.success(response, HTTPPostSessionResponse(data: json as AnyObject)))
+                    done(.success(response, HTTPPostSessionResponse(data: json)))
                     return
                 }
             }
@@ -129,8 +129,8 @@ open class CouchDB {
         public var name: String!
         public var roles: [String]!
         
-        public init(data: AnyObject) {
-            if let d = data as? [String: AnyObject] {
+        public init(data: Any) {
+            if let d = data as? [String: Any] {
                 if let
                     name = d["name"] as? String,
                     let roles = d["roles"] as? [String] {
@@ -146,8 +146,8 @@ open class CouchDB {
         public var authentication_db: String!
         public var authentication_handlers: [String]!
         
-        public init(data: AnyObject) {
-            if let d = data as? [String: AnyObject] {
+        public init(data: Any) {
+            if let d = data as? [String: Any] {
                 if let
                     authenticated = d["authenticated"] as? String,
                     let authentication_db = d["authentication_db"] as? String,
@@ -166,15 +166,15 @@ open class CouchDB {
         public var ok: Bool!
         public var userCtx: UserContext!
         
-        public init(data: AnyObject) {
-            if let d = data as? [String: AnyObject] {
+        public init(data: Any) {
+            if let d = data as? [String: Any] {
                 if let
-                    info = d["info"] as? [String: AnyObject],
+                    info = d["info"] as? [String: Any],
                     let ok = d["ok"] as? Bool,
-                    let userCtx = d["userCtx"] as? [String: AnyObject] {
-                        self.info = HTTPGetSessionResponseInfo(data: info as AnyObject)
+                    let userCtx = d["userCtx"] as? [String: Any] {
+                        self.info = HTTPGetSessionResponseInfo(data: info)
                         self.ok = ok
-                        self.userCtx = UserContext(data: userCtx as AnyObject)
+                        self.userCtx = UserContext(data: userCtx)
                 }
             }
         }
@@ -192,7 +192,7 @@ open class CouchDB {
                 done(.error(error))
             case .success:
                 if let json = response.result.value {
-                    done(.success(response, HTTPGetSessionResponse(data: json as AnyObject)))
+                    done(.success(response, HTTPGetSessionResponse(data: json)))
                     return
                 }
             }
@@ -209,8 +209,8 @@ open class CouchDB {
     public struct HTTPDeleteSessionResponse {
         public var ok: Bool!
         
-        public init(data: AnyObject) {
-            if let d = data as? [String: AnyObject] {
+        public init(data: Any) {
+            if let d = data as? [String: Any] {
                 if let ok = d["ok"] as? Bool {
                     self.ok = ok
                 }
@@ -230,7 +230,7 @@ open class CouchDB {
                 done(.error(error))
             case .success:
                 if let json = response.result.value {
-                    done(.success(response, HTTPDeleteSessionResponse(data: json as AnyObject)))
+                    done(.success(response, HTTPDeleteSessionResponse(data: json)))
                     return
                 }
             }
@@ -248,8 +248,8 @@ open class CouchDB {
     public struct HTTPPutCreateSuccess {
         public var ok: Bool!
         
-        public init(data: AnyObject) {
-            if let dict = data as? [String: AnyObject] {
+        public init(data: Any) {
+            if let dict = data as? [String: Any] {
                 if
                     let ok = dict["ok"] as? Bool {
                         self.ok = ok
@@ -270,7 +270,7 @@ open class CouchDB {
                 done(.error(error))
             case .success:
                 if let json = response.result.value {
-                    done(.success(response, HTTPPutCreateSuccess(data: json as AnyObject)))
+                    done(.success(response, HTTPPutCreateSuccess(data: json)))
                     return
                 }
             }
@@ -288,8 +288,8 @@ open class CouchDB {
     public struct HTTPDeleteResponse {
         public var ok: Bool!
         
-        public init(data: AnyObject) {
-            if let dict = data as? [String: AnyObject] {
+        public init(data: Any) {
+            if let dict = data as? [String: Any] {
                 if let ok = dict["ok"] as? Bool {
                     self.ok = ok
                 }
@@ -309,7 +309,7 @@ open class CouchDB {
                 done(.error(error))
             case .success:
                 if let json = response.result.value {
-                    done(.success(response, HTTPDeleteResponse(data: json as AnyObject)))
+                    done(.success(response, HTTPDeleteResponse(data: json)))
                     return
                 }
             }
@@ -340,12 +340,12 @@ open class CouchDB {
             self.roles = roles
         }
         
-        public func serialize() -> [String: AnyObject] {
-            var dict = [String: AnyObject]()
-            dict["name"] = name as AnyObject?
-            dict["password"] = password as AnyObject?
-            dict["roles"] = roles as AnyObject?
-            dict["type"] = type as AnyObject?
+        public func serialize() -> [String: Any] {
+            var dict = [String: Any]()
+            dict["name"] = name as String?
+            dict["password"] = password as String?
+            dict["roles"] = roles as [String]?
+            dict["type"] = type as String?
             return dict
         }
     }
@@ -361,7 +361,7 @@ open class CouchDB {
                 done(.error(error))
             case .success:
                 if let json = response.result.value {
-                    done(.success(response, Database.HTTPPostDatabaseReponse(data: json as AnyObject)))
+                    done(.success(response, Database.HTTPPostDatabaseReponse(data: json)))
                     return
                 }
             }
@@ -384,7 +384,7 @@ open class CouchDB {
      */
     open class Document {
         
-        open var dictionary = [String: AnyObject]()
+        open var dictionary = [String: Any]()
         open var _id: String?
         open var _rev: String?
         
@@ -393,7 +393,7 @@ open class CouchDB {
             self._rev = _rev
         }
         
-        public init(data: [String: AnyObject]) {
+        public init(data: [String: Any]) {
             if let
                 _id = data["_id"] as? String,
                 let _rev = data["_rev"] as? String {
@@ -402,9 +402,9 @@ open class CouchDB {
             }
         }
         
-        open func serialize() -> [String: AnyObject] {
-            self.dictionary["_id"] = self._id as AnyObject?
-            self.dictionary["_rev"] = self._rev as AnyObject?
+        open func serialize() -> [String: Any] {
+            self.dictionary["_id"] = self._id as String?
+            self.dictionary["_rev"] = self._rev as String?
             return self.dictionary
         }
     }
@@ -424,17 +424,17 @@ open class CouchDB {
             super.init(_id: "_design/\(_id!)", _rev: _rev)
         }
         
-        open override func serialize() -> [String : AnyObject] {
-            self.dictionary["language"] = language as AnyObject?
-            var wrapper = [String: AnyObject]()
+        open override func serialize() -> [String : Any] {
+            self.dictionary["language"] = language as String?
+            var wrapper = [String: Any]()
             for (key, value) in self.views {
                 var _views = ["map": value.map]
                 if let reduce = value.reduce {
                     _views["reduce"] = reduce
                 }
-                wrapper[key] = _views as AnyObject?
+                wrapper[key] = _views
             }
-            self.dictionary["views"] = wrapper as AnyObject?
+            self.dictionary["views"] = wrapper
             return super.serialize()
         }
         
@@ -517,8 +517,8 @@ open class CouchDB {
             public var ok: Bool!
             public var rev: String!
             
-            public init(data: AnyObject) {
-                if let dict = data as? [String: AnyObject] {
+            public init(data: Any) {
+                if let dict = data as? [String: Any] {
                     if
                         let id = dict["id"] as? String,
                         let ok = dict["ok"] as? Bool,
@@ -543,7 +543,7 @@ open class CouchDB {
                     done(.error(error))
                 case .success:
                     if let json = response.result.value {
-                        done(.success(response, HTTPPostDatabaseReponse(data: json as AnyObject)))
+                        done(.success(response, HTTPPostDatabaseReponse(data: json)))
                         return
                     }
                 }
@@ -562,7 +562,7 @@ open class CouchDB {
                     done(.error(error))
                 case .success:
                     if let json = response.result.value {
-                        done(.success(response, HTTPPostDatabaseReponse(data: json as AnyObject)))
+                        done(.success(response, HTTPPostDatabaseReponse(data: json)))
                         return
                     }
                 }
@@ -583,7 +583,7 @@ open class CouchDB {
                     done(.error(error))
                 case .success:
                     if let json = response.result.value {
-                        done(.success(response, HTTPPostDatabaseReponse(data: json as AnyObject)))
+                        done(.success(response, HTTPPostDatabaseReponse(data: json)))
                         return
                     }
                 }
@@ -598,7 +598,7 @@ open class CouchDB {
          * http://docs.couchdb.org/en/latest/api/document/common.html#get--db-docid
          */
         public enum GetResponse {
-            case success(DataResponse<Any>, AnyObject)
+            case success(DataResponse<Any>, Any)
             case error(Error)
         }
         
@@ -610,7 +610,7 @@ open class CouchDB {
                     done(.error(error))
                 case .success:
                     if let json = response.result.value {
-                        done(.success(response, json as AnyObject))
+                        done(.success(response, json))
                         return
                     }
                 }
@@ -630,10 +630,10 @@ open class CouchDB {
             public var error: String?
             public var reason: String?
             
-            public init(data: AnyObject) {
-                if let dict = data as? [String: AnyObject] {
-                    if let
-                        id = dict["id"] as? String,
+            public init(data: Any) {
+                if let dict = data as? [String: Any] {
+                    if
+                        let id = dict["id"] as? String,
                         let rev = dict["rev"] as? String {
                             self.id = id
                             self.rev = rev
@@ -665,7 +665,7 @@ open class CouchDB {
                     done(.error(error))
                 case .success:
                     if let json = response.result.value {
-                        if let data = json as? [AnyObject] {
+                        if let data = json as? [Any] {
                             let arr = data.map() { HTTPBulkResponse(data: $0) }
                             done(.success(response, arr))
                         }
@@ -701,11 +701,11 @@ open class CouchDB {
             public var total_rows: Int!
             public var update_seq: Int!
             
-            public init(data: AnyObject) {
-                if let dict = data as? [String: AnyObject] {
+            public init(data: Any) {
+                if let dict = data as? [String: Any] {
                     if
                         let offset = dict["offset"] as? Int,
-                        let rows = dict["rows"] as? [AnyObject],
+                        let rows = dict["rows"] as? [Any],
                         let total_rows = dict["total_rows"] as? Int {
                             self.offset = offset
                             self.total_rows = total_rows
@@ -724,11 +724,11 @@ open class CouchDB {
         public struct Row {
             public var id: String!
             public var key: String!
-            public var value: AnyObject!
-            public var doc: [String: AnyObject]?
+            public var value: Any!
+            public var doc: [String: Any]?
             
-            public init(data: AnyObject) {
-                if let dict = data as? [String: AnyObject] {
+            public init(data: Any) {
+                if let dict = data as? [String: Any] {
                     if
                         let id = dict["id"] as? String,
                         let key = dict["key"] as? String {
@@ -736,7 +736,7 @@ open class CouchDB {
                             self.key = key
                             self.value = dict["value"]
                     }
-                    if let doc = dict["doc"] as? [String: AnyObject] {
+                    if let doc = dict["doc"] as? [String: Any] {
                         self.doc = doc
                     }
                 }
@@ -764,7 +764,7 @@ open class CouchDB {
                     done(.error(error))
                 case .success:
                     if let json = response.result.value {
-                        done(.success(response, GETResponse(data: json as AnyObject)))
+                        done(.success(response, GETResponse(data: json)))
                         return
                     }
                 }
