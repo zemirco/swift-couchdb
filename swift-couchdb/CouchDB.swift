@@ -186,7 +186,7 @@ open class CouchDB {
     }
     
     open func getSession(_ done: @escaping (GetSessionResponse) -> Void) {
-        Alamofire.request("\(self.url)_session").validate().responseJSON { response in
+        Alamofire.request("\(self.url)_session", headers: self.headers).validate().responseJSON { response in
             switch response.result {
             case .failure(let error):
                 done(.error(error))
@@ -224,7 +224,7 @@ open class CouchDB {
     }
     
     open func logout(_ done: @escaping (LogoutResponse) -> Void) {
-        Alamofire.request("\(self.url)_session", method: .delete).validate().responseJSON { response in
+        Alamofire.request("\(self.url)_session", method: .delete, headers: self.headers).validate().responseJSON { response in
             switch response.result {
             case .failure(let error):
                 done(.error(error))
@@ -264,7 +264,7 @@ open class CouchDB {
     }
     
     open func createDatabase(_ database: String, done: @escaping (CreateDatabaseResponse) -> Void) {
-        Alamofire.request("\(self.url)\(database)", method: .put).validate().responseJSON { response in
+        Alamofire.request("\(self.url)\(database)", method: .put, headers: self.headers).validate().responseJSON { response in
             switch response.result {
             case .failure(let error):
                 done(.error(error))
@@ -303,7 +303,7 @@ open class CouchDB {
     }
     
     open func deleteDatabase(_ database: String, done: @escaping (DeleteDatabaseReponse) -> Void) {
-        Alamofire.request("\(self.url)\(database)", method: .delete).validate().responseJSON { response in
+        Alamofire.request("\(self.url)\(database)", method: .delete, headers: self.headers).validate().responseJSON { response in
             switch response.result {
             case .failure(let error):
                 done(.error(error))
@@ -355,7 +355,7 @@ open class CouchDB {
      */
     open func createUser(_ user: User, done: @escaping (Database.PostResponse) -> Void) {
         let data = user.serialize()
-        Alamofire.request("\(self.url)_users/org.couchdb.user:\(user.name)", method: .put, parameters: data, encoding: JSONEncoding.default).validate().responseJSON { response in
+        Alamofire.request("\(self.url)_users/org.couchdb.user:\(user.name)", method: .put, parameters: data, encoding: JSONEncoding.default, headers: self.headers).validate().responseJSON { response in
             switch response.result {
             case .failure(let error):
                 done(.error(error))
@@ -537,7 +537,7 @@ open class CouchDB {
         }
         
         open func post(_ document: Document, done: @escaping (PostResponse) -> Void) {
-            Alamofire.request(self.url, method: .post, parameters: document.serialize(), encoding: JSONEncoding.default).validate().responseJSON { response in
+            Alamofire.request(self.url, method: .post, parameters: document.serialize(), encoding: JSONEncoding.default, headers: self.headers).validate().responseJSON { response in
                 switch response.result {
                 case .failure(let error):
                     done(.error(error))
@@ -556,7 +556,7 @@ open class CouchDB {
          * http://docs.couchdb.org/en/latest/api/document/common.html#put--db-docid
          */
         open func put(_ document: Document, done: @escaping (PostResponse) -> Void) {
-            Alamofire.request("\(self.url)\(document._id!)", method: .put, parameters: document.serialize(), encoding: JSONEncoding.default).validate().responseJSON { response in
+            Alamofire.request("\(self.url)\(document._id!)", method: .put, parameters: document.serialize(), encoding: JSONEncoding.default, headers: self.headers).validate().responseJSON { response in
                 switch response.result {
                 case .failure(let error):
                     done(.error(error))
@@ -577,7 +577,7 @@ open class CouchDB {
          * http://docs.couchdb.org/en/latest/api/document/common.html#delete--db-docid
          */
         open func delete(_ document: Document, done: @escaping (PostResponse) -> Void) {
-            Alamofire.request("\(self.url)\(document._id!)?rev=\(document._rev!)", method: .delete).validate().responseJSON { response in
+            Alamofire.request("\(self.url)\(document._id!)?rev=\(document._rev!)", method: .delete, headers: self.headers).validate().responseJSON { response in
                 switch response.result {
                 case .failure(let error):
                     done(.error(error))
@@ -604,7 +604,7 @@ open class CouchDB {
         
         
         open func get(_ id: String, done: @escaping (GetResponse) -> Void) {
-            Alamofire.request("\(self.url)\(id)").validate().responseJSON { response in
+            Alamofire.request("\(self.url)\(id)", headers: self.headers).validate().responseJSON { response in
                 switch response.result {
                 case .failure(let error):
                     done(.error(error))
@@ -659,7 +659,7 @@ open class CouchDB {
             let data = [
                 "docs": docs
             ]
-            Alamofire.request("\(self.url)_bulk_docs", method: .post, parameters: data, encoding: JSONEncoding.default).validate().responseJSON { response in
+            Alamofire.request("\(self.url)_bulk_docs", method: .post, parameters: data, encoding: JSONEncoding.default, headers: self.headers).validate().responseJSON { response in
                 switch response.result {
                 case .failure(let error):
                     done(.error(error))
