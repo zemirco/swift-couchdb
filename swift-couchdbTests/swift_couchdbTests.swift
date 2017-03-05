@@ -3,10 +3,12 @@ import UIKit
 import XCTest
 import swift_couchdb
 
+fileprivate let url = "http://localhost:5984"
+
 class swift_couchdbTests: XCTestCase {
     
     fileprivate let timeout: TimeInterval = 1
-    fileprivate var couchdb = CouchDB(url: "http://localhost:5984", name: nil, password: nil)
+    fileprivate var couchdb = CouchDB(url: url, name: nil, password: nil)
     
     override func setUp() {
         super.setUp()
@@ -506,6 +508,69 @@ class swift_couchdbTests: XCTestCase {
             
         }
         
+        waitForExpectations(timeout: timeout, handler: nil)
+    }
+    
+    func testCookie() {
+        let expectation = self.expectation(description: "cookie")
+        
+        // create user
+        let juna = CouchDB.User(name: "juna", password: "juna", roles: ["user"])
+        couchdb.createUser(juna) { _ in
+            
+            // login to get cookie
+            self.couchdb.login("juna", password: "juna") { response in
+                switch response {
+                case .error(let error):
+                    XCTAssertNil(error)
+                case .success(let response, let success):
+                    XCTAssertEqual(response.response?.statusCode, 200)
+                    XCTAssert(success.ok!)
+                    
+                    // get cookie from response
+                    if
+                        let headerFields = response.response?.allHeaderFields as? [String: String],
+                        let uri = response.request?.url {
+                            let cookies = HTTPCookie.cookies(withResponseHeaderFields: headerFields, for: uri)
+                            let cookie = cookies[0]
+                        
+                        // create another couchdb instance without password but with cookie
+                        // auth headers are empty and therefore only cookie is used for auth
+                        let couchdb2 = CouchDB(url: url, cookie: cookie)
+                        couchdb2.getSession() { response in
+                            
+                            switch response {
+                            case .error(let error):
+                                XCTAssertNil(error)
+                            case .success(let response, let res):
+                                XCTAssertEqual(response.response?.statusCode, 200)
+                                XCTAssertEqual(res.info.authenticated, "cookie")
+                                XCTAssertEqual(res.userCtx.roles, ["user"])
+                                XCTAssert(res.ok!)
+                                XCTAssertEqual(res.userCtx.name, "juna")
+                            }
+                            
+                            // delete user
+                            let database = self.couchdb.use("_users")
+                            database.get("org.couchdb.user:juna") { response in
+                                switch response {
+                                case .error(let error):
+                                    XCTAssertNil(error)
+                                case .success(let response, let json):
+                                    XCTAssertEqual(response.response?.statusCode, 200)
+                                    let doc = CouchDB.Document(data: json as! [String : Any])
+                                    
+                                    database.delete(doc) { _ in
+                                        expectation.fulfill()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+        }
         waitForExpectations(timeout: timeout, handler: nil)
     }
     

@@ -18,6 +18,11 @@ open class CouchDB {
         }
     }
     
+    public init(url: String, cookie: HTTPCookie) {
+        self.url = url.hasSuffix("/") ? url : "\(url)/"
+        Alamofire.SessionManager.default.session.configuration.httpCookieStorage?.setCookie(cookie)
+    }
+    
     /**
      * Info
      *
